@@ -1,0 +1,36 @@
+TITLE:
+M2: Class1 
+DATA:
+FILE = "/Users/agarber/github/Intro_to_LPA/m2_enum/c_lpa_m2.dat";
+ 
+VARIABLE:
+NAMES = rural gender fathed mothed mth_scor sci_scor phy_scor bio_scor; 
+ MISSING=.;
+ usevar = mth_scor-bio_scor;
+classes = c(1); 
+ANALYSIS:
+estimator = mlr; 
+    type = mixture;
+    starts = 200 50; 
+    processors = 10;
+MODEL:
+%c#1%
+    [mth_scor-bio_scor];   !!! means are are freely estimated
+    mth_scor-bio_scor;     !!! variances are freely estimated
+                           !!! covariances are fixed to zero (default)
+! %c#2%
+! [mth_scor-bio_scor];
+! mth_scor-bio_scor;
+     
+! %c#3%
+! [mth_scor-bio_scor];
+! mth_scor-bio_scor;
+     
+! %c#4%
+! [mth_scor-bio_scor];
+! mth_scor-bio_scor;
+OUTPUT:
+sampstat residual tech11 tech14;
+PLOT:
+type = plot3; 
+     series = mth_scor-bio_scor(*);

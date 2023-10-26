@@ -1,0 +1,818 @@
+---
+title: "Introduction to Latent Profile Analysis (LPA)"
+author: "*Adam Garber*"
+subtitle: ''
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output: 
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+    toc: yes
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, message = FALSE, warning = FALSE)
+library(prettydoc); library(here)
+```
+
+`University of California, Santa Barbara`
+
+```{r, echo=FALSE, eval=TRUE, out.width = "60%", out.height= "60%", fig.pos="h"}
+
+knitr::include_graphics(here("figures", "lpa_mix_density.png"))
+```
+
+*Figure*. Gaussian mixture models. Data simulated from a 2-class model. 
+
+_________________________________________________________________________
+
+## Preparation
+
+Download repository here: https://github.com/MM4DBER/Intro_to_LPA
+
+________________________________________________________________________
+
+Data source:
+
+The example presented in this tutorial utilizes 4 test score measures (Math, Science, Physics, and Biology) from the public-use data source, *The Longitudinal Survey of American Youth* (**LSAY**):  [$\color{blue}{\text{See documentation here}}$](https://www.lsay.org/)
+
+________________________________________________________________________
+
+Load packages
+```{r, eval=TRUE}
+
+library(tidyverse)
+library(glue)
+library(MplusAutomation)
+library(here)
+library(gt)
+library(tidyLPA)
+
+```
+
+________________________________________________________________________
+
+## Variance-covariance specifications in `LPA`
+
+________________________________________________________________________
+
+The variance-covariance matrix
+```{r, echo=FALSE, eval=TRUE, out.width = "60%", out.height= "60%", fig.pos="h"}
+
+knitr::include_graphics(here("figures", "var_covar_matrix.png"))
+
+```
+
+*Figure*. Picture adapted from tutorial (Rosenberg, 2019).
+
+- `model 1`: Equal variances, and covariances fixed to 0 
+- `model 2`: Free variances and covariances fixed to 0 
+- `model 3`: Equal variances and equal covariances 
+- `model 4`: Free variances, and equal covariances
+- `model 5`: Equal variances, and free covariances 
+- `model 6`: Free variances and free covariances 
+
+________________________________________________________________________
+
+Which variance-covariance specification is appropriate?
+
+```{r, echo=FALSE, eval=TRUE, out.width = "60%", out.height= "60%", fig.pos="h"}
+
+knitr::include_graphics(here("figures", "lpa_scat.png"))
+```
+
+*Figure*. Picture adapted from lecture slides by Karen Nylund-Gibson. 
+
+________________________________________________________________________
+
+
+## Example: Math, Science, Physics, and Biology test score measures (LSAY).
+
+________________________________________________________________________
+
+Read in data 
+```{r, eval=TRUE}
+
+lsay_data <- read_csv(here("data", "lsay_lpa.csv"))
+
+```
+________________________________________________________________________
+
+## `model 1`: Equal variances (fixed) & covariances fixed to zero
+
+```{r, echo=FALSE, eval=TRUE, out.width = "60%", out.height= "60%", fig.pos="h"}
+
+knitr::include_graphics(here("figures", "lpa_m1.png"))
+```
+
+*Figure*. Picture of "diagonal class-invariant model" adapted from lecture slides by Karen Nylund-Gibson. 
+
+________________________________________________________________________
+
+**Note:** Model variance-covariance specifications are **stated explicitly** here for pedagogical purposes.`Model 1` can be replicated by removing the syntax under the `MODEL=` command as this is the default specification in Mplus. 
+
+```{r, eval=FALSE}
+lpa_k14  <- lapply(1:4, function(k) { 
+  z2 <- if_else(k < 2 , '!' , '')
+  z3 <- if_else(k < 3 , '!' , '')
+  z4 <- if_else(k < 4 , '!' , '')
+  
+lpa_enum  <- mplusObject(
+      
+  TITLE = glue("M1: Class{k} "), 
+  
+  VARIABLE = glue(
+   "usevar = mth_scor-bio_scor;
+    classes = c({k}); "),
+  
+  ANALYSIS = 
+   "estimator = mlr; 
+    type = mixture;
+    starts = 200 50; 
+    processors = 10;",
+  
+  MODEL = glue(
+    "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     !!!          Syntax replicates default Mplus specification            !!!
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+     %c#1%
+     [mth_scor-bio_scor];     !!! means are are freely estimated
+     mth_scor-bio_scor(1-4);  !!! variances are fixed to equality
+                              !!! covariances are fixed to zero (default)
+{z2} %c#2%
+{z2} [mth_scor-bio_scor];
+{z2} mth_scor-bio_scor(1-4);
+     
+{z3} %c#3%
+{z3} [mth_scor-bio_scor];
+{z3} mth_scor-bio_scor(1-4);
+     
+{z4} %c#4%
+{z4} [mth_scor-bio_scor];
+{z4} mth_scor-bio_scor(1-4);"),
+  
+  OUTPUT = "sampstat residual tech11 tech14;",
+  
+  PLOT = 
+    "type = plot3; 
+     series = mth_scor-bio_scor(*);",
+  
+  usevariables = colnames(lsay_data),
+  rdata = lsay_data)
+
+lpa_enum_fit <- mplusModeler(lpa_enum, 
+    dataout=glue(here("m1_enum", "c_lpa_m1.dat")),
+    modelout=glue(here("m1_enum", "c{k}_lpa_m1.inp")) ,
+    check=TRUE, run = TRUE, hashfilename = FALSE)
+})
+
+```
+
+________________________________________________________________________
+
+Model 1: Produce model fit table
+```{r}
+m1_output <- readModels(here("m1_enum"), quiet = TRUE)
+
+m1_enum <- LatexSummaryTable(m1_output,                               
+                keepCols=c("Title","Parameters", "LL", "BIC",         
+                           "aBIC", "BLRT_PValue", "T11_VLMR_PValue",
+                           "Observations"),    
+                sortBy = "Title")                                     
+
+gt(m1_enum)
+```
+
+________________________________________________________________________
+
+## `model 2`: Free variances & covariances fixed to zero
+
+```{r, eval=FALSE}
+lpa_k14  <- lapply(1:4, function(k) { 
+  z2 <- if_else(k < 2 , '!' , '')
+  z3 <- if_else(k < 3 , '!' , '')
+  z4 <- if_else(k < 4 , '!' , '')
+  
+lpa_enum  <- mplusObject(
+      
+  TITLE = glue("M2: Class{k} "), 
+  
+  VARIABLE = glue(
+   "usevar = mth_scor-bio_scor;
+    classes = c({k}); "),
+  
+  ANALYSIS = 
+   "estimator = mlr; 
+    type = mixture;
+    starts = 200 50; 
+    processors = 10;",
+  
+  MODEL = glue(
+   
+   "%c#1%
+    [mth_scor-bio_scor];   !!! means are are freely estimated
+    mth_scor-bio_scor;     !!! variances are freely estimated
+                           !!! covariances are fixed to zero (default)
+{z2} %c#2%
+{z2} [mth_scor-bio_scor];
+{z2} mth_scor-bio_scor;
+     
+{z3} %c#3%
+{z3} [mth_scor-bio_scor];
+{z3} mth_scor-bio_scor;
+     
+{z4} %c#4%
+{z4} [mth_scor-bio_scor];
+{z4} mth_scor-bio_scor;"),
+  
+  OUTPUT = "sampstat residual tech11 tech14;",
+  
+  PLOT = 
+    "type = plot3; 
+     series = mth_scor-bio_scor(*);",
+  
+  usevariables = colnames(lsay_data),
+  rdata = lsay_data)
+
+lpa_enum_fit <- mplusModeler(lpa_enum, 
+    dataout=glue(here("m2_enum", "c_lpa_m2.dat")),
+    modelout=glue(here("m2_enum", "c{k}_lpa_m2.inp")) ,
+    check=TRUE, run = TRUE, hashfilename = FALSE)
+})
+
+```
+
+________________________________________________________________________
+
+Model 2: Produce model fit table
+```{r}
+m2_output <- readModels(here("m2_enum"), quiet = TRUE)
+
+m2_enum <- LatexSummaryTable(m2_output,                               
+                keepCols=c("Title","Parameters", "LL", "BIC",         
+                           "aBIC", "BLRT_PValue", "T11_VLMR_PValue",
+                           "Observations"),     
+                sortBy = "Title")                                     
+
+gt(m2_enum)
+```
+
+
+________________________________________________________________________
+
+## `model 3`: Equal (fixed) variances & equal (fixed) covariances 
+
+```{r, eval=FALSE}
+lpa_k14  <- lapply(1:4, function(k) { 
+  z2 <- if_else(k < 2 , '!' , '')
+  z3 <- if_else(k < 3 , '!' , '')
+  z4 <- if_else(k < 4 , '!' , '')
+  
+lpa_enum  <- mplusObject(
+      
+  TITLE = glue("M3: Class{k} "), 
+  
+  VARIABLE = glue(
+   "usevar = mth_scor-bio_scor;
+    classes = c({k}); "),
+  
+  ANALYSIS = 
+   "estimator = mlr; 
+    type = mixture;
+    starts = 200 50; 
+    processors = 10;",
+  
+  MODEL = glue(
+    
+   "%c#1%
+    [mth_scor-bio_scor];          !!! means are are freely estimated
+    mth_scor-bio_scor(1-4);       !!! variances are fixed to equality
+    mth_scor with sci_scor(5);   !!! covariances are fixed to equality
+    mth_scor with phy_scor(6);
+    mth_scor with bio_scor(7);
+    sci_scor with phy_scor(8);
+    sci_scor with bio_scor(9);
+    phy_scor with bio_scor(10);
+   
+{z2} %c#2%
+{z2} [mth_scor-bio_scor];
+{z2} mth_scor-bio_scor(1-4);
+{z2} mth_scor with sci_scor(5);   
+{z2} mth_scor with phy_scor(6);
+{z2} mth_scor with bio_scor(7);
+{z2} sci_scor with phy_scor(8);
+{z2} sci_scor with bio_scor(9);
+{z2} phy_scor with bio_scor(10);
+     
+{z3} %c#3%
+{z3} [mth_scor-bio_scor];
+{z3} mth_scor-bio_scor(1-4);
+{z3} mth_scor with sci_scor(5);   
+{z3} mth_scor with phy_scor(6);
+{z3} mth_scor with bio_scor(7);
+{z3} sci_scor with phy_scor(8);
+{z3} sci_scor with bio_scor(9);
+{z3} phy_scor with bio_scor(10);
+     
+{z4} %c#4%
+{z4} [mth_scor-bio_scor];
+{z4} mth_scor-bio_scor(1-4);
+{z4} mth_scor with sci_scor(5);   
+{z4} mth_scor with phy_scor(6);
+{z4} mth_scor with bio_scor(7);
+{z4} sci_scor with phy_scor(8);
+{z4} sci_scor with bio_scor(9);
+{z4} phy_scor with bio_scor(10);"),
+  
+  OUTPUT = "sampstat residual tech11 tech14;",
+  
+  PLOT = 
+    "type = plot3; 
+     series = mth_scor-bio_scor(*);",
+  
+  usevariables = colnames(lsay_data),
+  rdata = lsay_data)
+
+lpa_enum_fit <- mplusModeler(lpa_enum, 
+    dataout=glue(here("m3_enum", "c_lpa_m3.dat")),
+    modelout=glue(here("m3_enum", "c{k}_lpa_m3.inp")) ,
+    check=TRUE, run = TRUE, hashfilename = FALSE)
+})
+
+```
+
+________________________________________________________________________
+
+Model 3: Produce model fit table
+```{r}
+m3_output <- readModels(here("m3_enum"), quiet = TRUE)
+
+m3_enum <- LatexSummaryTable(m3_output,                                
+                keepCols=c("Title","Parameters", "LL", "BIC",          
+                           "aBIC", "BLRT_PValue", "T11_VLMR_PValue",
+                           "Observations"),
+                sortBy = "Title")                                        
+
+gt(m3_enum)
+```
+
+________________________________________________________________________
+
+## `model 4`: Free variances & equal (fixed) covariances 
+
+```{r, eval=FALSE}
+lpa_k14  <- lapply(1:4, function(k) { 
+  z2 <- if_else(k < 2 , '!' , '')
+  z3 <- if_else(k < 3 , '!' , '')
+  z4 <- if_else(k < 4 , '!' , '')
+  
+lpa_enum  <- mplusObject(
+      
+  TITLE = glue("M4: Class{k} "), 
+  
+  VARIABLE = glue(
+   "usevar = mth_scor-bio_scor;
+    classes = c({k}); "),
+  
+  ANALYSIS = 
+   "estimator = mlr; 
+    type = mixture;
+    starts = 200 50; 
+    processors = 10;",
+  
+  MODEL = glue(
+    
+   "%c#1%
+    [mth_scor-bio_scor];          !!! means are freely estimated
+    mth_scor-bio_scor;            !!! variances are freely estimated
+    mth_scor with sci_scor(5);    !!! covariances are fixed to equality
+    mth_scor with phy_scor(6);
+    mth_scor with bio_scor(7);
+    sci_scor with phy_scor(8);
+    sci_scor with bio_scor(9);
+    phy_scor with bio_scor(10);
+   
+{z2} %c#2%
+{z2} [mth_scor-bio_scor];
+{z2} mth_scor-bio_scor;
+{z2} mth_scor with sci_scor(5);   
+{z2} mth_scor with phy_scor(6);
+{z2} mth_scor with bio_scor(7);
+{z2} sci_scor with phy_scor(8);
+{z2} sci_scor with bio_scor(9);
+{z2} phy_scor with bio_scor(10);
+     
+{z3} %c#3%
+{z3} [mth_scor-bio_scor];
+{z3} mth_scor-bio_scor;
+{z3} mth_scor with sci_scor(5);   
+{z3} mth_scor with phy_scor(6);
+{z3} mth_scor with bio_scor(7);
+{z3} sci_scor with phy_scor(8);
+{z3} sci_scor with bio_scor(9);
+{z3} phy_scor with bio_scor(10);
+     
+{z4} %c#4%
+{z4} [mth_scor-bio_scor];
+{z4} mth_scor-bio_scor;
+{z4} mth_scor with sci_scor(5);   
+{z4} mth_scor with phy_scor(6);
+{z4} mth_scor with bio_scor(7);
+{z4} sci_scor with phy_scor(8);
+{z4} sci_scor with bio_scor(9);
+{z4} phy_scor with bio_scor(10);"),
+  
+  OUTPUT = "sampstat residual tech11 tech14;",
+  
+  PLOT = 
+    "type = plot3; 
+     series = mth_scor-bio_scor(*);",
+  
+  usevariables = colnames(lsay_data),
+  rdata = lsay_data)
+
+lpa_enum_fit <- mplusModeler(lpa_enum, 
+    dataout=glue(here("m4_enum", "c_lpa_m4.dat")),
+    modelout=glue(here("m4_enum", "c{k}_lpa_m4.inp")) ,
+    check=TRUE, run = TRUE, hashfilename = FALSE)
+})
+
+```
+
+________________________________________________________________________
+
+Model 4: Produce model fit table
+```{r}
+m4_output <- readModels(here("m4_enum"), quiet = TRUE)
+
+m4_enum <- LatexSummaryTable(m4_output,                                     
+                keepCols=c("Title","Parameters", "LL", "BIC",               
+                           "aBIC", "BLRT_PValue", "T11_VLMR_PValue",
+                           "Observations"),
+                sortBy = "Title")                                           
+
+gt(m4_enum)
+```
+
+________________________________________________________________________
+
+## `model 5`: Equal (fixed) variances & free covariances 
+
+```{r, eval=FALSE}
+lpa_k14  <- lapply(1:4, function(k) { 
+  z2 <- if_else(k < 2 , '!' , '')
+  z3 <- if_else(k < 3 , '!' , '')
+  z4 <- if_else(k < 4 , '!' , '')
+  
+lpa_enum  <- mplusObject(
+      
+  TITLE = glue("M5: Class{k} "), 
+  
+  VARIABLE = glue(
+   "usevar = mth_scor-bio_scor;
+    classes = c({k}); "),
+  
+  ANALYSIS = 
+   "estimator = mlr; 
+    type = mixture;
+    starts = 200 50; 
+    processors = 10;",
+  
+  MODEL = glue(
+    
+   "%c#1%
+    [mth_scor-bio_scor];          !!! means are freely estimated
+    mth_scor-bio_scor(1-4);       !!! variances are fixed to equality
+    mth_scor with sci_scor;       !!! covariances are freely estimated
+    mth_scor with phy_scor;
+    mth_scor with bio_scor;
+    sci_scor with phy_scor;
+    sci_scor with bio_scor;
+    phy_scor with bio_scor;
+   
+{z2} %c#2%
+{z2} [mth_scor-bio_scor];
+{z2} mth_scor-bio_scor(1-4);
+{z2} mth_scor with sci_scor;  
+{z2} mth_scor with phy_scor;
+{z2} mth_scor with bio_scor;
+{z2} sci_scor with phy_scor;
+{z2} sci_scor with bio_scor;
+{z2} phy_scor with bio_scor;
+     
+{z3} %c#3%
+{z3} [mth_scor-bio_scor];
+{z3} mth_scor-bio_scor(1-4);
+{z3} mth_scor with sci_scor;   
+{z3} mth_scor with phy_scor;
+{z3} mth_scor with bio_scor;
+{z3} sci_scor with phy_scor;
+{z3} sci_scor with bio_scor;
+{z3} phy_scor with bio_scor;
+     
+{z4} %c#4%
+{z4} [mth_scor-bio_scor];
+{z4} mth_scor-bio_scor(1-4);
+{z4} mth_scor with sci_scor;  
+{z4} mth_scor with phy_scor;
+{z4} mth_scor with bio_scor;
+{z4} sci_scor with phy_scor;
+{z4} sci_scor with bio_scor;
+{z4} phy_scor with bio_scor;"),
+  
+  OUTPUT = "sampstat residual tech11 tech14;",
+  
+  PLOT = 
+    "type = plot3; 
+     series = mth_scor-bio_scor(*);",
+  
+  usevariables = colnames(lsay_data),
+  rdata = lsay_data)
+
+lpa_enum_fit <- mplusModeler(lpa_enum, 
+    dataout=glue(here("m5_enum", "c_lpa_m5.dat")),
+    modelout=glue(here("m5_enum", "c{k}_lpa_m5.inp")) ,
+    check=TRUE, run = TRUE, hashfilename = FALSE)
+})
+
+```
+
+________________________________________________________________________
+
+Model 5: Produce model fit table
+```{r}
+m5_output <- readModels(here("m5_enum"), quiet = TRUE)
+
+m5_enum <- LatexSummaryTable(m5_output,                                   
+                keepCols=c("Title","Parameters", "LL", "BIC",             
+                           "aBIC", "BLRT_PValue", "T11_VLMR_PValue",
+                           "Observations"),    
+                sortBy = "Title")                                         
+
+gt(m5_enum)
+```
+
+________________________________________________________________________
+
+## `model 6`: Free variances & free covariances 
+
+```{r, echo=FALSE, eval=TRUE, out.width = "60%", out.height= "60%", fig.pos="h"}
+
+knitr::include_graphics(here("figures", "lpa_m6.png"))
+```
+
+*Figure*. Picture adapted from lecture slides by Karen Nylund-Gibson. 
+
+```{r, eval=FALSE}
+lpa_k14  <- lapply(1:4, function(k) { 
+  z2 <- if_else(k < 2 , '!' , '')
+  z3 <- if_else(k < 3 , '!' , '')
+  z4 <- if_else(k < 4 , '!' , '')
+  
+lpa_enum  <- mplusObject(
+      
+  TITLE = glue("M6: Class{k} "), 
+  
+  VARIABLE = glue(
+   "usevar = mth_scor-bio_scor;
+    classes = c({k}); "),
+  
+  ANALYSIS = 
+   "estimator = mlr; 
+    type = mixture;
+    starts = 200 50; 
+    processors = 10;",
+  
+  MODEL = glue(
+    
+   "%c#1%
+    [mth_scor-bio_scor];          !!! means are freely estimated
+    mth_scor-bio_scor;            !!! variances are freely estimated
+    mth_scor with sci_scor;       !!! covariances are freely estimated
+    mth_scor with phy_scor;
+    mth_scor with bio_scor;
+    sci_scor with phy_scor;
+    sci_scor with bio_scor;
+    phy_scor with bio_scor;
+   
+{z2} %c#2%
+{z2} [mth_scor-bio_scor];
+{z2} mth_scor-bio_scor;
+{z2} mth_scor with sci_scor;  
+{z2} mth_scor with phy_scor;
+{z2} mth_scor with bio_scor;
+{z2} sci_scor with phy_scor;
+{z2} sci_scor with bio_scor;
+{z2} phy_scor with bio_scor;
+     
+{z3} %c#3%
+{z3} [mth_scor-bio_scor];
+{z3} mth_scor-bio_scor;
+{z3} mth_scor with sci_scor;   
+{z3} mth_scor with phy_scor;
+{z3} mth_scor with bio_scor;
+{z3} sci_scor with phy_scor;
+{z3} sci_scor with bio_scor;
+{z3} phy_scor with bio_scor;
+     
+{z4} %c#4%
+{z4} [mth_scor-bio_scor];
+{z4} mth_scor-bio_scor;
+{z4} mth_scor with sci_scor;  
+{z4} mth_scor with phy_scor;
+{z4} mth_scor with bio_scor;
+{z4} sci_scor with phy_scor;
+{z4} sci_scor with bio_scor;
+{z4} phy_scor with bio_scor;"),
+  
+  OUTPUT = "sampstat residual tech11 tech14;",
+  
+  PLOT = 
+    "type = plot3; 
+     series = mth_scor-bio_scor(*);",
+  
+  usevariables = colnames(lsay_data),
+  rdata = lsay_data)
+
+lpa_enum_fit <- mplusModeler(lpa_enum, 
+    dataout=glue(here("m6_enum", "c_lpa_m6.dat")),
+    modelout=glue(here("m6_enum", "c{k}_lpa_m6.inp")) ,
+    check=TRUE, run = TRUE, hashfilename = FALSE)
+})
+
+```
+
+________________________________________________________________________
+
+Model 6: Produce model fit table
+```{r}
+m6_output <- readModels(here("m6_enum"), quiet = TRUE)
+
+m6_enum <- LatexSummaryTable(m6_output,                                 
+                keepCols=c("Title","Parameters", "LL", "BIC",           
+                           "aBIC", "BLRT_PValue", "T11_VLMR_PValue",    
+                           "Observations"),                             
+                sortBy = "Title")                                       
+
+gt(m6_enum)
+```
+
+________________________________________________________________________
+
+## Produce fit table incuding all models $M1-M6$
+
+```{r, eval=TRUE}
+
+allFit <- rbind(m1_enum,m2_enum,m3_enum,m4_enum,m5_enum,m6_enum)
+                   
+allFit1 <- allFit %>% 
+  mutate(aBIC = -2*LL+Parameters*log((Observations+2)/24)) %>% 
+  mutate(CAIC = -2*LL+Parameters*(log(Observations)+1)) %>% 
+  mutate(AWE = -2*LL+2*Parameters*(log(Observations)+1.5)) %>%
+  mutate(SIC = -.5*BIC) %>% 
+  mutate(expSIC = exp(SIC - max(SIC))) %>% 
+  mutate(BF = exp(SIC-lead(SIC))) %>% 
+  mutate(cmPk = expSIC/sum(expSIC)) %>% 
+  select(1:5,9:10,6:7,13,14) 
+
+```
+
+Format the model fit table 
+```{r, eval=TRUE}
+
+allFit1 %>% 
+  mutate(Title = str_remove_all(Title, "M..")) %>% 
+  gt() %>%
+  tab_header(
+    title = md("**Model Fit Summary Table**"), subtitle = md("&nbsp;")) %>% 
+  cols_label(
+    Title = "Classes",
+    Parameters = md("Par"),
+    LL = md("*LL*"),
+    T11_VLMR_PValue = "VLMR",
+    BLRT_PValue = "BLRT",
+    BF = md("BF"),
+    cmPk = md("*cmPk*")) %>%
+  tab_footnote(
+    footnote = md(
+    "*Note.* Par = Parameters; *LL* = model log likelihood;
+      BIC = Bayesian information criterion;
+      aBIC = sample size adjusted BIC; CAIC = consistent Akaike information criterion;
+      AWE = approximate weight of evidence criterion;
+      BLRT = bootstrapped likelihood ratio test p-value;
+      VLMR = Vuong-Lo-Mendell-Rubin adjusted likelihood ratio test p-value;
+      *cmPk* = approximate correct model probability."), 
+    locations = cells_title()) %>% 
+  tab_options(column_labels.font.weight = "bold") %>% 
+  fmt_number(10,decimals = 2,
+             drop_trailing_zeros=TRUE,
+             suffixing = TRUE) %>% 
+  fmt_number(c(3:9,11), 
+             decimals = 2) %>% 
+  fmt_missing(1:11,
+              missing_text = "--") %>% 
+  fmt(c(8:9,11),
+    fns = function(x) 
+    ifelse(x<0.001, "<.001",
+           scales::number(x, accuracy = 0.01))) %>%
+  fmt(10, fns = function(x) 
+    ifelse(x>100, ">100",
+           scales::number(x, accuracy = .1))) %>%
+  tab_row_group(
+    group = "Model-1",
+    rows = 1:4) %>%
+  tab_row_group(
+    group = "Model-2",
+    rows = 5:8) %>%
+  tab_row_group(
+    group = "Model-3",
+    rows = 9:12) %>%
+  tab_row_group(
+    group = "Model-4",
+    rows = 13:16) %>%
+  tab_row_group(
+    group = "Model-5",
+    rows = 17:20) %>%
+  tab_row_group(
+    group = "Model-6",
+    rows = 21:24) %>%
+  row_group_order(
+      groups = c("Model-1","Model-2","Model-3",
+                 "Model-4","Model-5","Model-6")) %>% 
+  tab_style(style = list(cell_text(weight = "bold")),
+    locations = list(
+    cells_body(columns = BIC, row = BIC == min(BIC[c(1:4)])),
+    cells_body(columns = BIC, row = BIC == min(BIC[c(5:8)])),
+    cells_body(columns = BIC, row = BIC == min(BIC[c(9:12)])),
+    cells_body(columns = BIC, row = BIC == min(BIC[c(13:16)])),
+    cells_body(columns = BIC, row = BIC == min(BIC[c(17:20)])),
+    cells_body(columns = BIC, row = BIC == min(BIC[c(21:24)])),
+    cells_body(columns = aBIC, row = aBIC == min(aBIC[c(1:4)])),
+    cells_body(columns = aBIC, row = aBIC == min(aBIC[c(5:8)])),
+    cells_body(columns = aBIC, row = aBIC == min(aBIC[c(9:12)])),
+    cells_body(columns = aBIC, row = aBIC == min(aBIC[c(13:16)])),
+    cells_body(columns = aBIC, row = aBIC == min(aBIC[c(17:20)])),
+    cells_body(columns = aBIC, row = aBIC == min(aBIC[c(21:24)])),
+    cells_body(columns = CAIC, row = CAIC == min(CAIC[c(1:4)])),
+    cells_body(columns = CAIC, row = CAIC == min(CAIC[c(5:8)])),
+    cells_body(columns = CAIC, row = CAIC == min(CAIC[c(9:12)])),
+    cells_body(columns = CAIC, row = CAIC == min(CAIC[c(13:16)])),
+    cells_body(columns = CAIC, row = CAIC == min(CAIC[c(17:20)])),
+    cells_body(columns = CAIC, row = CAIC == min(CAIC[c(21:24)])),
+    cells_body(columns = AWE, row = AWE == min(AWE[c(1:4)])),
+    cells_body(columns = AWE, row = AWE == min(AWE[c(5:8)])),
+    cells_body(columns = AWE, row = AWE == min(AWE[c(9:12)])),
+    cells_body(columns = AWE, row = AWE == min(AWE[c(13:16)])),
+    cells_body(columns = AWE, row = AWE == min(AWE[c(17:20)])),
+    cells_body(columns = AWE, row = AWE == min(AWE[c(21:24)])),
+    cells_body(columns = cmPk, row =  cmPk > .001),
+    cells_body(columns = BF, row =  BF > 10),
+    cells_body(columns =  T11_VLMR_PValue,
+    row =ifelse(T11_VLMR_PValue < .001 & lead(T11_VLMR_PValue) > .001, T11_VLMR_PValue < .001, NA)),
+    cells_body(columns =  BLRT_PValue,
+    row =ifelse(BLRT_PValue < .001 & lead(BLRT_PValue) > .001, BLRT_PValue < .001, NA))
+      ))
+
+```
+________________________________________________________________________
+
+## Plot model profiles (Model 1; $C=4$)
+```{r, eval=TRUE}
+lsay_data[1:500,5:8] %>%
+    single_imputation() %>%
+    estimate_profiles(4, package = "MplusAutomation") %>% 
+    plot_profiles(sd=FALSE, add_line=TRUE, alpha_range = c(0, 0.15))
+
+```
+
+*Figure.* Here we see an ordered solution.
+
+This result might be anticipated given that the correlation between test scores ranges from moderate to high (*r* = .57 - .95).
+
+
+
+________________________________________________________________________
+
+
+# References
+
+Hallquist, M. N., & Wiley, J. F. (2018). MplusAutomation: An R Package for Facilitating Large-Scale Latent Variable Analyses in Mplus. Structural equation modeling: a multidisciplinary journal, 25(4), 621-638.
+
+Miller, J. D., Hoffer, T., Suchner, R., Brown, K., & Nelson, C. (1992). LSAY codebook. Northern Illinois University.
+
+Muthén, B. O., Muthén, L. K., & Asparouhov, T. (2017). Regression and mediation analysis using Mplus. Los Angeles, CA: Muthén & Muthén.
+
+Muthén, L.K. and Muthén, B.O. (1998-2017).  Mplus User’s Guide.  Eighth Edition. Los Angeles, CA: Muthén & Muthén
+
+Rosenberg, J. M., van Lissa, C. J., Beymer, P. N., Anderson, D. J., Schell, M. J. & Schmidt, J. A. (2019). tidyLPA: Easily carry out Latent Profile Analysis (LPA) using open-source or commercial software [R package]. https://data-edu.github.io/tidyLPA/
+
+R Core Team (2017). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. URL http://www.R-project.org/
+
+Wickham et al., (2019). Welcome to the tidyverse. Journal of Open Source Software, 4(43), 1686, https://doi.org/10.21105/joss.01686
+
+________________________________________________________________________
+
+![](figures/UCSB_Navy_mark.png){ width=75% }
+
