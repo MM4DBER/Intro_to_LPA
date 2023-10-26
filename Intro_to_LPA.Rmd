@@ -778,20 +778,17 @@ allFit1 %>%
 ```
 ________________________________________________________________________
 
-## Plot model profiles (Model 1; $C=4$)
-```{r, eval=TRUE}
-lsay_data[1:500,5:8] %>%
-    single_imputation() %>%
-    estimate_profiles(4, package = "MplusAutomation") %>% 
-    plot_profiles(sd=FALSE, add_line=TRUE, alpha_range = c(0, 0.15))
+## Plot profile means and confidence intervals (Model 2; $C=4$)
 
+NOTE: The `plotMixtures()` is used for plotting LPA models only (i.e., means & confidence intervals)
+```{r}
+plotMixtures(m2_output$c4_lpa_m2.out,
+  ci = 0.95, bw = FALSE) 
 ```
 
 *Figure.* Here we see an ordered solution.
 
 This result might be anticipated given that the correlation between test scores ranges from moderate to high (*r* = .57 - .95).
-
-
 
 ________________________________________________________________________
 
