@@ -57,35 +57,25 @@ ________________________________________________________________________
 
 ________________________________________________________________________
 
-**The variance-covariance matrix**
-
-- Models are presented in the order described in the book chapter by Masyn (2013; p.591).
-- An additional model (2a) demonstrates the specification of covariances fixed to equality across class.
-- NOTE: Many model specifications are possible. Among variance and covariance parameter groups any combination of these parameters can be freely estimated or fixed. 
-
-> Example: For an LPA model with 4 indicators the variance-covariance matrix includes 4 variance and 7 covariance parameters per class. A methods effect may be indentified in a survey (e.g., similar item wording) which provides a rationale to freely estimate the associated covariance. However, the remaining 6 covariances may be negligible in magnitude providing an empirical basis to fix this sub-set of covariances at zero. 
-
+The variance-covariance matrix
 ```{r, echo=FALSE, eval=TRUE, out.width = "60%", out.height= "60%", fig.pos="h"}
 
 knitr::include_graphics(here("figures", "var_covar_matrix.png"))
 
 ```
 
-*Figure*. Picture adapted from tutorial (Rosenberg, 2019). 
+*Figure*. Picture adapted from tutorial (Rosenberg, 2019). CHECK W/ MASYN
+
+- `model 1`: Equal variances, and covariances fixed to 0 # MASYN Model 1 
+- `model 2`: Free variances and covariances fixed to 0   # MASYN Model 2
+- `model 3`: Equal variances and equal covariances  ### consider removing
+- `model 4`: Free variances, and equal covariances ### consider removing
+- `model 5`: Equal variances, and free covariances # MASYN Model 3
+- `model 6`: Free variances and free covariances  # MASYN Model 4 
 
 ________________________________________________________________________
 
-**Models 1-4 from book chapter in Masyn (2013):**
-
-- `model 1`: Equal variances, and covariances fixed to 0 
-- `model 2`: Free variances and covariances fixed to 0   
-- `model 2a`: Free variances, and equal covariances (**extra model**)
-- `model 3`: Equal variances, and free covariances 
-- `model 4`: Free variances and free covariances  
-
-________________________________________________________________________
-
-**Which variance-covariance specification is appropriate?**
+Which variance-covariance specification is appropriate?
 
 ```{r, echo=FALSE, eval=TRUE, out.width = "60%", out.height= "60%", fig.pos="h"}
 
@@ -269,9 +259,10 @@ m2_enum <- LatexSummaryTable(m2_output,
 gt(m2_enum)
 ```
 
+
 ________________________________________________________________________
 
-## `model 2a`: Free variances & equal (fixed) covariances 
+## `model 3`: Equal (fixed) variances & equal (fixed) covariances 
 
 ```{r, eval=FALSE}
 lpa_k14  <- lapply(1:4, function(k) { 
@@ -281,7 +272,105 @@ lpa_k14  <- lapply(1:4, function(k) {
   
 lpa_enum  <- mplusObject(
       
-  TITLE = glue("M2a: Class{k} "), 
+  TITLE = glue("M3: Class{k} "), 
+  
+  VARIABLE = glue(
+   "usevar = mth_scor-bio_scor;
+    classes = c({k}); "),
+  
+  ANALYSIS = 
+   "estimator = mlr; 
+    type = mixture;
+    starts = 200 50; 
+    processors = 10;",
+  
+  MODEL = glue(
+    
+   "%c#1%
+    [mth_scor-bio_scor];          !!! means are are freely estimated
+    mth_scor-bio_scor(1-4);       !!! variances are fixed to equality
+    mth_scor with sci_scor(5);   !!! covariances are fixed to equality
+    mth_scor with phy_scor(6);
+    mth_scor with bio_scor(7);
+    sci_scor with phy_scor(8);
+    sci_scor with bio_scor(9);
+    phy_scor with bio_scor(10);
+   
+{z2} %c#2%
+{z2} [mth_scor-bio_scor];
+{z2} mth_scor-bio_scor(1-4);
+{z2} mth_scor with sci_scor(5);   
+{z2} mth_scor with phy_scor(6);
+{z2} mth_scor with bio_scor(7);
+{z2} sci_scor with phy_scor(8);
+{z2} sci_scor with bio_scor(9);
+{z2} phy_scor with bio_scor(10);
+     
+{z3} %c#3%
+{z3} [mth_scor-bio_scor];
+{z3} mth_scor-bio_scor(1-4);
+{z3} mth_scor with sci_scor(5);   
+{z3} mth_scor with phy_scor(6);
+{z3} mth_scor with bio_scor(7);
+{z3} sci_scor with phy_scor(8);
+{z3} sci_scor with bio_scor(9);
+{z3} phy_scor with bio_scor(10);
+     
+{z4} %c#4%
+{z4} [mth_scor-bio_scor];
+{z4} mth_scor-bio_scor(1-4);
+{z4} mth_scor with sci_scor(5);   
+{z4} mth_scor with phy_scor(6);
+{z4} mth_scor with bio_scor(7);
+{z4} sci_scor with phy_scor(8);
+{z4} sci_scor with bio_scor(9);
+{z4} phy_scor with bio_scor(10);"),
+  
+  OUTPUT = "sampstat stdyx residual tech11 tech14;",
+  
+  PLOT = 
+    "type = plot3; 
+     series = mth_scor-bio_scor(*);",
+  
+  usevariables = colnames(lsay_data),
+  rdata = lsay_data)
+
+lpa_enum_fit <- mplusModeler(lpa_enum, 
+    dataout=glue(here("m3_enum", "c_lpa_m3.dat")),
+    modelout=glue(here("m3_enum", "c{k}_lpa_m3.inp")) ,
+    check=TRUE, run = TRUE, hashfilename = FALSE)
+})
+
+```
+
+________________________________________________________________________
+
+Model 3: Produce model fit table
+```{r}
+m3_output <- readModels(here("m3_enum"), quiet = TRUE)
+
+m3_enum <- LatexSummaryTable(m3_output,                                
+                keepCols=c("Title","Parameters", "LL", "BIC",          
+                           "aBIC", "BLRT_PValue", "T11_VLMR_PValue",
+                           "Observations"),
+                sortBy = "Title")                                        
+
+gt(m3_enum)
+```
+
+________________________________________________________________________
+
+## `model 4`: Free variances & equal (fixed) covariances 
+
+```{r, eval=FALSE}
+lpa_k14  <- lapply(1:4, function(k) { 
+  z2 <- if_else(k < 2 , '!' , '')
+  z3 <- if_else(k < 3 , '!' , '')
+  z4 <- if_else(k < 4 , '!' , '')
+  
+lpa_enum  <- mplusObject(
+      
+  TITLE = glue("M4: Class{k} "), 
   
   VARIABLE = glue(
    "usevar = mth_scor-bio_scor;
@@ -345,8 +434,8 @@ lpa_enum  <- mplusObject(
   rdata = lsay_data)
 
 lpa_enum_fit <- mplusModeler(lpa_enum, 
-    dataout=glue(here("m2a_enum", "c_lpa_m2a.dat")),
-    modelout=glue(here("m2a_enum", "c{k}_lpa_m2a.inp")) ,
+    dataout=glue(here("m4_enum", "c_lpa_m4.dat")),
+    modelout=glue(here("m4_enum", "c{k}_lpa_m4.inp")) ,
     check=TRUE, run = TRUE, hashfilename = FALSE)
 })
 
@@ -354,22 +443,22 @@ lpa_enum_fit <- mplusModeler(lpa_enum,
 
 ________________________________________________________________________
 
-Model 2a: Produce model fit table
+Model 4: Produce model fit table
 ```{r}
-m2a_output <- readModels(here("m2a_enum"), quiet = TRUE)
+m4_output <- readModels(here("m4_enum"), quiet = TRUE)
 
-m2a_enum <- LatexSummaryTable(m2a_output,                                     
+m4_enum <- LatexSummaryTable(m4_output,                                     
                 keepCols=c("Title","Parameters", "LL", "BIC",               
                            "aBIC", "BLRT_PValue", "T11_VLMR_PValue",
                            "Observations"),
                 sortBy = "Title")                                           
 
-gt(m2a_enum)
+gt(m4_enum)
 ```
 
 ________________________________________________________________________
 
-## `model 3`: Equal (fixed) variances & free covariances 
+## `model 5`: Equal (fixed) variances & free covariances 
 
 ```{r, eval=FALSE}
 lpa_k14  <- lapply(1:4, function(k) { 
@@ -379,7 +468,7 @@ lpa_k14  <- lapply(1:4, function(k) {
   
 lpa_enum  <- mplusObject(
       
-  TITLE = glue("M3: Class{k} "), 
+  TITLE = glue("M5: Class{k} "), 
   
   VARIABLE = glue(
    "usevar = mth_scor-bio_scor;
@@ -443,8 +532,8 @@ lpa_enum  <- mplusObject(
   rdata = lsay_data)
 
 lpa_enum_fit <- mplusModeler(lpa_enum, 
-    dataout=glue(here("m3_enum", "c_lpa_m3.dat")),
-    modelout=glue(here("m3_enum", "c{k}_lpa_m3.inp")) ,
+    dataout=glue(here("m5_enum", "c_lpa_m5.dat")),
+    modelout=glue(here("m5_enum", "c{k}_lpa_m5.inp")) ,
     check=TRUE, run = TRUE, hashfilename = FALSE)
 })
 
@@ -452,26 +541,26 @@ lpa_enum_fit <- mplusModeler(lpa_enum,
 
 ________________________________________________________________________
 
-Model 3: Produce model fit table
+Model 5: Produce model fit table
 ```{r}
-m3_output <- readModels(here("m3_enum"), quiet = TRUE)
+m5_output <- readModels(here("m5_enum"), quiet = TRUE)
 
-m3_enum <- LatexSummaryTable(m3_output,                                   
+m5_enum <- LatexSummaryTable(m5_output,                                   
                 keepCols=c("Title","Parameters", "LL", "BIC",             
                            "aBIC", "BLRT_PValue", "T11_VLMR_PValue",
                            "Observations"),    
                 sortBy = "Title")                                         
 
-gt(m3_enum)
+gt(m5_enum)
 ```
 
 ________________________________________________________________________
 
-## `model 4`: Free variances & free covariances 
+## `model 6`: Free variances & free covariances 
 
 ```{r, echo=FALSE, eval=TRUE, out.width = "60%", out.height= "60%", fig.pos="h"}
 
-knitr::include_graphics(here("figures", "lpa_m4.png"))
+knitr::include_graphics(here("figures", "lpa_m6.png"))
 ```
 
 *Figure*. Picture adapted from lecture slides by Karen Nylund-Gibson. 
@@ -484,7 +573,7 @@ lpa_k14  <- lapply(1:4, function(k) {
   
 lpa_enum  <- mplusObject(
       
-  TITLE = glue("M4: Class{k} "), 
+  TITLE = glue("M6: Class{k} "), 
   
   VARIABLE = glue(
    "usevar = mth_scor-bio_scor;
@@ -548,8 +637,8 @@ lpa_enum  <- mplusObject(
   rdata = lsay_data)
 
 lpa_enum_fit <- mplusModeler(lpa_enum, 
-    dataout=glue(here("m4_enum", "c_lpa_m4.dat")),
-    modelout=glue(here("m4_enum", "c{k}_lpa_m4.inp")) ,
+    dataout=glue(here("m6_enum", "c_lpa_m6.dat")),
+    modelout=glue(here("m6_enum", "c{k}_lpa_m6.inp")) ,
     check=TRUE, run = TRUE, hashfilename = FALSE)
 })
 
@@ -557,26 +646,26 @@ lpa_enum_fit <- mplusModeler(lpa_enum,
 
 ________________________________________________________________________
 
-Model 4: Produce model fit table
+Model 6: Produce model fit table
 ```{r}
-m4_output <- readModels(here("m4_enum"), quiet = TRUE)
+m6_output <- readModels(here("m6_enum"), quiet = TRUE)
 
-m4_enum <- LatexSummaryTable(m4_output,                                 
+m6_enum <- LatexSummaryTable(m6_output,                                 
                 keepCols=c("Title","Parameters", "LL", "BIC",           
                            "aBIC", "BLRT_PValue", "T11_VLMR_PValue",    
                            "Observations"),                             
                 sortBy = "Title")                                       
 
-gt(m4_enum)
+gt(m6_enum)
 ```
 
 ________________________________________________________________________
 
-## Produce fit table incuding all models (`m1-m4`)
+## Produce fit table incuding all models $M1-M6$
 
 ```{r, eval=TRUE}
 
-allFit <- rbind(m1_enum,m2_enum,m2a_enum,m3_enum,m4_enum)
+allFit <- rbind(m1_enum,m2_enum,m3_enum,m4_enum,m5_enum,m6_enum)
                    
 allFit1 <- allFit %>% 
   mutate(aBIC = -2*LL+Parameters*log((Observations+2)/24)) %>% 
@@ -594,7 +683,7 @@ Format the model fit table
 ```{r, eval=TRUE}
 
 allFit1 %>% 
-  mutate(Title = str_remove_all(Title, "M...")) %>% 
+  mutate(Title = str_remove_all(Title, "M..")) %>% 
   gt() %>%
   tab_header(
     title = md("**Model Fit Summary Table**"), subtitle = md("&nbsp;")) %>% 
@@ -622,7 +711,7 @@ allFit1 %>%
              suffixing = TRUE) %>% 
   fmt_number(c(3:9,11), 
              decimals = 2) %>% 
-  sub_missing(1:11,
+  fmt_missing(1:11,
               missing_text = "--") %>% 
   fmt(c(8:9,11),
     fns = function(x) 
@@ -632,23 +721,26 @@ allFit1 %>%
     ifelse(x>100, ">100",
            scales::number(x, accuracy = .1))) %>%
   tab_row_group(
-    label = "Model-1",
+    group = "Model-1",
     rows = 1:4) %>%
   tab_row_group(
-    label = "Model-2",
+    group = "Model-2",
     rows = 5:8) %>%
   tab_row_group(
-    label = "Model-2a",
+    group = "Model-3",
     rows = 9:12) %>%
   tab_row_group(
-    label = "Model-3",
+    group = "Model-4",
     rows = 13:16) %>%
   tab_row_group(
-    label = "Model-4",
+    group = "Model-5",
     rows = 17:20) %>%
+  tab_row_group(
+    group = "Model-6",
+    rows = 21:24) %>%
   row_group_order(
-      groups = c("Model-1","Model-2","Model-2a",
-                 "Model-3","Model-4")) %>% 
+      groups = c("Model-1","Model-2","Model-3",
+                 "Model-4","Model-5","Model-6")) %>% 
   tab_style(style = list(cell_text(weight = "bold")),
     locations = list(
     cells_body(columns = BIC, row = BIC == min(BIC[c(1:4)])),
@@ -656,21 +748,25 @@ allFit1 %>%
     cells_body(columns = BIC, row = BIC == min(BIC[c(9:12)])),
     cells_body(columns = BIC, row = BIC == min(BIC[c(13:16)])),
     cells_body(columns = BIC, row = BIC == min(BIC[c(17:20)])),
+    cells_body(columns = BIC, row = BIC == min(BIC[c(21:24)])),
     cells_body(columns = aBIC, row = aBIC == min(aBIC[c(1:4)])),
     cells_body(columns = aBIC, row = aBIC == min(aBIC[c(5:8)])),
     cells_body(columns = aBIC, row = aBIC == min(aBIC[c(9:12)])),
     cells_body(columns = aBIC, row = aBIC == min(aBIC[c(13:16)])),
     cells_body(columns = aBIC, row = aBIC == min(aBIC[c(17:20)])),
+    cells_body(columns = aBIC, row = aBIC == min(aBIC[c(21:24)])),
     cells_body(columns = CAIC, row = CAIC == min(CAIC[c(1:4)])),
     cells_body(columns = CAIC, row = CAIC == min(CAIC[c(5:8)])),
     cells_body(columns = CAIC, row = CAIC == min(CAIC[c(9:12)])),
     cells_body(columns = CAIC, row = CAIC == min(CAIC[c(13:16)])),
     cells_body(columns = CAIC, row = CAIC == min(CAIC[c(17:20)])),
+    cells_body(columns = CAIC, row = CAIC == min(CAIC[c(21:24)])),
     cells_body(columns = AWE, row = AWE == min(AWE[c(1:4)])),
     cells_body(columns = AWE, row = AWE == min(AWE[c(5:8)])),
     cells_body(columns = AWE, row = AWE == min(AWE[c(9:12)])),
     cells_body(columns = AWE, row = AWE == min(AWE[c(13:16)])),
     cells_body(columns = AWE, row = AWE == min(AWE[c(17:20)])),
+    cells_body(columns = AWE, row = AWE == min(AWE[c(21:24)])),
     cells_body(columns = cmPk, row =  cmPk > .001),
     cells_body(columns = BF, row =  BF > 10),
     cells_body(columns =  T11_VLMR_PValue,

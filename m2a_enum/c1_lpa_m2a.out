@@ -1,13 +1,13 @@
 Mplus VERSION 8.6 (Mac)
 MUTHEN & MUTHEN
-10/24/2023   2:30 PM
+01/08/2024   9:45 AM
 
 INPUT INSTRUCTIONS
 
   TITLE:
-  M6: Class1
+  M2a: Class1
   DATA:
-  FILE = "/Users/agarber/github/Intro_to_LPA/m6_enum/c_lpa_m6.dat";
+  FILE = "/Users/agarber/github/Intro_to_LPA/m2a_enum/c_lpa_m2a.dat";
 
   VARIABLE:
   NAMES = rural gender fathed mothed mth_scor sci_scor phy_scor bio_scor;
@@ -23,42 +23,42 @@ INPUT INSTRUCTIONS
   %c#1%
       [mth_scor-bio_scor];          !!! means are freely estimated
       mth_scor-bio_scor;            !!! variances are freely estimated
-      mth_scor with sci_scor;       !!! covariances are freely estimated
-      mth_scor with phy_scor;
-      mth_scor with bio_scor;
-      sci_scor with phy_scor;
-      sci_scor with bio_scor;
-      phy_scor with bio_scor;
+      mth_scor with sci_scor(5);    !!! covariances are fixed to equality
+      mth_scor with phy_scor(6);
+      mth_scor with bio_scor(7);
+      sci_scor with phy_scor(8);
+      sci_scor with bio_scor(9);
+      phy_scor with bio_scor(10);
 
   ! %c#2%
   ! [mth_scor-bio_scor];
   ! mth_scor-bio_scor;
-  ! mth_scor with sci_scor;
-  ! mth_scor with phy_scor;
-  ! mth_scor with bio_scor;
-  ! sci_scor with phy_scor;
-  ! sci_scor with bio_scor;
-  ! phy_scor with bio_scor;
+  ! mth_scor with sci_scor(5);
+  ! mth_scor with phy_scor(6);
+  ! mth_scor with bio_scor(7);
+  ! sci_scor with phy_scor(8);
+  ! sci_scor with bio_scor(9);
+  ! phy_scor with bio_scor(10);
 
   ! %c#3%
   ! [mth_scor-bio_scor];
   ! mth_scor-bio_scor;
-  ! mth_scor with sci_scor;
-  ! mth_scor with phy_scor;
-  ! mth_scor with bio_scor;
-  ! sci_scor with phy_scor;
-  ! sci_scor with bio_scor;
-  ! phy_scor with bio_scor;
+  ! mth_scor with sci_scor(5);
+  ! mth_scor with phy_scor(6);
+  ! mth_scor with bio_scor(7);
+  ! sci_scor with phy_scor(8);
+  ! sci_scor with bio_scor(9);
+  ! phy_scor with bio_scor(10);
 
   ! %c#4%
   ! [mth_scor-bio_scor];
   ! mth_scor-bio_scor;
-  ! mth_scor with sci_scor;
-  ! mth_scor with phy_scor;
-  ! mth_scor with bio_scor;
-  ! sci_scor with phy_scor;
-  ! sci_scor with bio_scor;
-  ! phy_scor with bio_scor;
+  ! mth_scor with sci_scor(5);
+  ! mth_scor with phy_scor(6);
+  ! mth_scor with bio_scor(7);
+  ! sci_scor with phy_scor(8);
+  ! sci_scor with bio_scor(9);
+  ! phy_scor with bio_scor(10);
   OUTPUT:
   sampstat residual tech11 tech14;
   PLOT:
@@ -85,7 +85,7 @@ INPUT INSTRUCTIONS
 
 
 
-M6: Class1
+M2a: Class1
 
 SUMMARY OF ANALYSIS
 
@@ -144,7 +144,7 @@ Random Starts Specifications
   Random seed for generating random starts                       0
 
 Input data file(s)
-  /Users/agarber/github/Intro_to_LPA/m6_enum/c_lpa_m6.dat
+  /Users/agarber/github/Intro_to_LPA/m2a_enum/c_lpa_m2a.dat
 Input data format  FREE
 
 
@@ -442,9 +442,9 @@ The following plots are available:
   Estimated means and observed individual values
   Estimated overall and class-specific distributions
 
-     Beginning Time:  14:30:29
-        Ending Time:  14:30:30
-       Elapsed Time:  00:00:01
+     Beginning Time:  09:45:57
+        Ending Time:  09:45:59
+       Elapsed Time:  00:00:02
 
 
 

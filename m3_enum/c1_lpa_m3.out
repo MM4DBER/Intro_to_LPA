@@ -1,6 +1,6 @@
 Mplus VERSION 8.6 (Mac)
 MUTHEN & MUTHEN
-10/24/2023   2:06 PM
+01/08/2024   9:52 AM
 
 INPUT INSTRUCTIONS
 
@@ -21,44 +21,44 @@ INPUT INSTRUCTIONS
       processors = 10;
   MODEL:
   %c#1%
-      [mth_scor-bio_scor];          !!! means are are freely estimated
+      [mth_scor-bio_scor];          !!! means are freely estimated
       mth_scor-bio_scor(1-4);       !!! variances are fixed to equality
-      mth_scor with sci_scor(5);   !!! covariances are fixed to equality
-      mth_scor with phy_scor(6);
-      mth_scor with bio_scor(7);
-      sci_scor with phy_scor(8);
-      sci_scor with bio_scor(9);
-      phy_scor with bio_scor(10);
+      mth_scor with sci_scor;       !!! covariances are freely estimated
+      mth_scor with phy_scor;
+      mth_scor with bio_scor;
+      sci_scor with phy_scor;
+      sci_scor with bio_scor;
+      phy_scor with bio_scor;
 
   ! %c#2%
   ! [mth_scor-bio_scor];
   ! mth_scor-bio_scor(1-4);
-  ! mth_scor with sci_scor(5);
-  ! mth_scor with phy_scor(6);
-  ! mth_scor with bio_scor(7);
-  ! sci_scor with phy_scor(8);
-  ! sci_scor with bio_scor(9);
-  ! phy_scor with bio_scor(10);
+  ! mth_scor with sci_scor;
+  ! mth_scor with phy_scor;
+  ! mth_scor with bio_scor;
+  ! sci_scor with phy_scor;
+  ! sci_scor with bio_scor;
+  ! phy_scor with bio_scor;
 
   ! %c#3%
   ! [mth_scor-bio_scor];
   ! mth_scor-bio_scor(1-4);
-  ! mth_scor with sci_scor(5);
-  ! mth_scor with phy_scor(6);
-  ! mth_scor with bio_scor(7);
-  ! sci_scor with phy_scor(8);
-  ! sci_scor with bio_scor(9);
-  ! phy_scor with bio_scor(10);
+  ! mth_scor with sci_scor;
+  ! mth_scor with phy_scor;
+  ! mth_scor with bio_scor;
+  ! sci_scor with phy_scor;
+  ! sci_scor with bio_scor;
+  ! phy_scor with bio_scor;
 
   ! %c#4%
   ! [mth_scor-bio_scor];
   ! mth_scor-bio_scor(1-4);
-  ! mth_scor with sci_scor(5);
-  ! mth_scor with phy_scor(6);
-  ! mth_scor with bio_scor(7);
-  ! sci_scor with phy_scor(8);
-  ! sci_scor with bio_scor(9);
-  ! phy_scor with bio_scor(10);
+  ! mth_scor with sci_scor;
+  ! mth_scor with phy_scor;
+  ! mth_scor with bio_scor;
+  ! sci_scor with phy_scor;
+  ! sci_scor with bio_scor;
+  ! phy_scor with bio_scor;
   OUTPUT:
   sampstat residual tech11 tech14;
   PLOT:
@@ -442,9 +442,9 @@ The following plots are available:
   Estimated means and observed individual values
   Estimated overall and class-specific distributions
 
-     Beginning Time:  14:06:15
-        Ending Time:  14:06:17
-       Elapsed Time:  00:00:02
+     Beginning Time:  09:52:29
+        Ending Time:  09:52:30
+       Elapsed Time:  00:00:01
 
 
 

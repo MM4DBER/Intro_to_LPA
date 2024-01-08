@@ -1,6 +1,6 @@
 Mplus VERSION 8.6 (Mac)
 MUTHEN & MUTHEN
-10/24/2023   2:06 PM
+01/08/2024   9:52 AM
 
 INPUT INSTRUCTIONS
 
@@ -21,44 +21,44 @@ INPUT INSTRUCTIONS
       processors = 10;
   MODEL:
   %c#1%
-      [mth_scor-bio_scor];          !!! means are are freely estimated
+      [mth_scor-bio_scor];          !!! means are freely estimated
       mth_scor-bio_scor(1-4);       !!! variances are fixed to equality
-      mth_scor with sci_scor(5);   !!! covariances are fixed to equality
-      mth_scor with phy_scor(6);
-      mth_scor with bio_scor(7);
-      sci_scor with phy_scor(8);
-      sci_scor with bio_scor(9);
-      phy_scor with bio_scor(10);
+      mth_scor with sci_scor;       !!! covariances are freely estimated
+      mth_scor with phy_scor;
+      mth_scor with bio_scor;
+      sci_scor with phy_scor;
+      sci_scor with bio_scor;
+      phy_scor with bio_scor;
 
    %c#2%
    [mth_scor-bio_scor];
    mth_scor-bio_scor(1-4);
-   mth_scor with sci_scor(5);
-   mth_scor with phy_scor(6);
-   mth_scor with bio_scor(7);
-   sci_scor with phy_scor(8);
-   sci_scor with bio_scor(9);
-   phy_scor with bio_scor(10);
+   mth_scor with sci_scor;
+   mth_scor with phy_scor;
+   mth_scor with bio_scor;
+   sci_scor with phy_scor;
+   sci_scor with bio_scor;
+   phy_scor with bio_scor;
 
    %c#3%
    [mth_scor-bio_scor];
    mth_scor-bio_scor(1-4);
-   mth_scor with sci_scor(5);
-   mth_scor with phy_scor(6);
-   mth_scor with bio_scor(7);
-   sci_scor with phy_scor(8);
-   sci_scor with bio_scor(9);
-   phy_scor with bio_scor(10);
+   mth_scor with sci_scor;
+   mth_scor with phy_scor;
+   mth_scor with bio_scor;
+   sci_scor with phy_scor;
+   sci_scor with bio_scor;
+   phy_scor with bio_scor;
 
   ! %c#4%
   ! [mth_scor-bio_scor];
   ! mth_scor-bio_scor(1-4);
-  ! mth_scor with sci_scor(5);
-  ! mth_scor with phy_scor(6);
-  ! mth_scor with bio_scor(7);
-  ! sci_scor with phy_scor(8);
-  ! sci_scor with bio_scor(9);
-  ! phy_scor with bio_scor(10);
+  ! mth_scor with sci_scor;
+  ! mth_scor with phy_scor;
+  ! mth_scor with bio_scor;
+  ! sci_scor with phy_scor;
+  ! sci_scor with bio_scor;
+  ! phy_scor with bio_scor;
   OUTPUT:
   sampstat residual tech11 tech14;
   PLOT:
@@ -218,51 +218,44 @@ UNIVARIATE SAMPLE STATISTICS
 
 RANDOM STARTS RESULTS RANKED FROM THE BEST TO THE WORST LOGLIKELIHOOD VALUES
 
+
+6 perturbed starting value run(s) did not converge or were rejected in the third stage.
 Final stage loglikelihood values at local maxima, seeds, and initial stage start numbers:
 
-          -39776.461  456213           160
-          -39776.461  227563           63
-          -39776.461  609185           181
-          -39776.461  120506           45
-          -39776.461  715561           125
-          -39776.461  902278           21
-          -39776.461  321390           133
-          -39776.461  856536           144
-          -39776.461  27071            15
-          -39776.461  372176           23
-          -39776.461  unperturbed      0
-          -39776.461  373505           88
-          -39776.461  347515           24
-          -39776.461  645664           39
-          -39776.461  25127            107
-          -39776.461  370466           41
-          -39776.461  475420           71
-          -39776.461  551639           55
-          -39776.461  650371           14
-          -39776.461  215353           164
-          -39776.461  928287           197
-          -39793.028  268217           83
-          -39793.028  576596           99
-          -39793.028  606576           151
-          -39793.028  533738           11
-          -39793.028  314084           81
-          -39793.028  70118            104
-          -39793.028  939709           112
-          -39793.028  637345           19
-          -39793.028  329127           185
-          -39793.028  751153           110
-          -39793.028  793035           187
-          -39793.028  565819           65
-          -39793.028  458181           189
-          -39793.028  509733           130
-          -39793.028  848331           137
-          -39806.997  318230           46
-          -39806.997  992389           77
-          -39806.997  635245           121
-          -39806.997  260601           36
-          -39806.997  728038           177
+          -39724.246  292884           103
+          -39724.246  313407           132
+          -39724.246  165853           105
+          -39724.246  259507           53
+          -39724.246  268217           83
+          -39724.246  383986           159
+          -39724.246  264081           186
+          -39724.246  863094           147
+          -39724.246  782200           84
+          -39724.246  207896           25
+          -39724.246  928287           197
+          -39724.246  783165           170
+          -39724.246  726035           191
+          -39724.246  476498           179
+          -39724.246  603842           61
+          -39724.246  648555           113
+          -39724.246  unperturbed      0
+          -39724.246  168762           200
+          -39724.246  967902           52
+          -39724.246  370466           41
+          -39724.246  696773           80
+          -39724.246  192071           142
+          -39724.246  569131           26
+          -39724.246  848969           173
+          -39724.246  723775           97
+          -39724.246  784664           75
+          -39724.246  848331           137
+          -39724.246  544048           87
+          -39738.107  509733           130
+          -39738.107  354208           196
+          -39755.130  263268           165
+          -39769.436  987090           70
 
-9 perturbed starting value run(s) did not converge or were rejected in the third stage.
+18 perturbed starting value run(s) did not converge or were rejected in the third stage.
 
 
 
@@ -276,19 +269,19 @@ THE MODEL ESTIMATION TERMINATED NORMALLY
 
 MODEL FIT INFORMATION
 
-Number of Free Parameters                       24
+Number of Free Parameters                       36
 
 Loglikelihood
 
-          H0 Value                      -39776.461
-          H0 Scaling Correction Factor      1.1524
+          H0 Value                      -39724.246
+          H0 Scaling Correction Factor      1.1938
             for MLR
 
 Information Criteria
 
-          Akaike (AIC)                   79600.923
-          Bayesian (BIC)                 79745.886
-          Sample-Size Adjusted BIC       79669.628
+          Akaike (AIC)                   79520.491
+          Bayesian (BIC)                 79737.936
+          Sample-Size Adjusted BIC       79623.549
             (n* = (n + 2) / 24)
 
 
@@ -299,9 +292,9 @@ BASED ON THE ESTIMATED MODEL
     Latent
    Classes
 
-       1        992.95025          0.32000
-       2       1002.94719          0.32322
-       3       1107.10256          0.35678
+       1        989.35916          0.31884
+       2       1262.35718          0.40682
+       3        851.28366          0.27434
 
 
 FINAL CLASS COUNTS AND PROPORTIONS FOR THE LATENT CLASSES
@@ -310,9 +303,9 @@ BASED ON ESTIMATED POSTERIOR PROBABILITIES
     Latent
    Classes
 
-       1        992.95025          0.32000
-       2       1002.94719          0.32322
-       3       1107.10256          0.35678
+       1        989.35916          0.31884
+       2       1262.35718          0.40682
+       3        851.28366          0.27434
 
 
 FINAL CLASS COUNTS AND PROPORTIONS FOR THE LATENT CLASSES
@@ -323,14 +316,14 @@ Class Counts and Proportions
     Latent
    Classes
 
-       1              936          0.30164
-       2             1029          0.33161
-       3             1138          0.36674
+       1             1009          0.32517
+       2             1271          0.40960
+       3              823          0.26523
 
 
 CLASSIFICATION QUALITY
 
-     Entropy                         0.494
+     Entropy                         0.575
 
 
 Average Latent Class Probabilities for Most Likely Latent Class Membership (Row)
@@ -338,9 +331,9 @@ by Latent Class (Column)
 
            1        2        3
 
-    1   0.674    0.164    0.163
-    2   0.174    0.786    0.040
-    3   0.162    0.036    0.802
+    1   0.680    0.170    0.151
+    2   0.140    0.855    0.005
+    3   0.152    0.006    0.842
 
 
 Classification Probabilities for the Most Likely Latent Class Membership (Column)
@@ -348,9 +341,9 @@ by Latent Class (Row)
 
            1        2        3
 
-    1   0.635    0.180    0.185
-    2   0.153    0.806    0.041
-    3   0.138    0.038    0.825
+    1   0.693    0.180    0.127
+    2   0.136    0.861    0.004
+    3   0.178    0.008    0.814
 
 
 Logits for the Classification Probabilities for the Most Likely Latent Class Membership (Column)
@@ -358,9 +351,9 @@ by Latent Class (Row)
 
               1        2        3
 
-    1      1.232   -0.029    0.000
-    2      1.321    2.984    0.000
-    3     -1.791   -3.091    0.000
+    1      1.698    0.350    0.000
+    2      3.599    5.446    0.000
+    3     -1.518   -4.658    0.000
 
 
 MODEL RESULTS
@@ -371,91 +364,91 @@ MODEL RESULTS
 Latent Class 1
 
  MTH_SCOR WITH
-    SCI_SCOR          31.336      2.068     15.152      0.000
-    PHY_SCOR          32.486      2.441     13.311      0.000
-    BIO_SCOR          25.800      2.334     11.056      0.000
+    SCI_SCOR           3.116      4.041      0.771      0.441
+    PHY_SCOR           6.497      3.483      1.865      0.062
+    BIO_SCOR           1.448      5.799      0.250      0.803
 
  SCI_SCOR WITH
-    PHY_SCOR          57.725      2.863     20.165      0.000
-    BIO_SCOR          43.964      3.400     12.929      0.000
+    PHY_SCOR          42.390      3.722     11.388      0.000
+    BIO_SCOR          33.671      9.160      3.676      0.000
 
  PHY_SCOR WITH
-    BIO_SCOR          37.889      2.707     13.995      0.000
+    BIO_SCOR          29.430      8.023      3.668      0.000
 
  Means
-    MTH_SCOR          45.553      1.044     43.630      0.000
-    SCI_SCOR          48.138      0.671     71.793      0.000
-    PHY_SCOR          46.933      0.732     64.106      0.000
-    BIO_SCOR          48.630      1.052     46.222      0.000
+    MTH_SCOR          51.593      1.560     33.069      0.000
+    SCI_SCOR          51.826      0.881     58.835      0.000
+    PHY_SCOR          51.657      0.878     58.830      0.000
+    BIO_SCOR          52.191      0.571     91.394      0.000
 
  Variances
-    MTH_SCOR          62.371      4.442     14.040      0.000
-    SCI_SCOR          54.504      2.950     18.479      0.000
-    PHY_SCOR          69.531      3.138     22.160      0.000
-    BIO_SCOR          72.827      3.909     18.632      0.000
+    MTH_SCOR          44.764      6.501      6.886      0.000
+    SCI_SCOR          41.046      4.667      8.795      0.000
+    PHY_SCOR          54.598      3.630     15.041      0.000
+    BIO_SCOR          60.684      9.602      6.320      0.000
 
 Latent Class 2
 
  MTH_SCOR WITH
-    SCI_SCOR          31.336      2.068     15.152      0.000
-    PHY_SCOR          32.486      2.441     13.311      0.000
-    BIO_SCOR          25.800      2.334     11.056      0.000
+    SCI_SCOR          15.283      3.764      4.060      0.000
+    PHY_SCOR          18.019      5.082      3.546      0.000
+    BIO_SCOR          11.119      2.475      4.493      0.000
 
  SCI_SCOR WITH
-    PHY_SCOR          57.725      2.863     20.165      0.000
-    BIO_SCOR          43.964      3.400     12.929      0.000
+    PHY_SCOR          41.398      4.245      9.753      0.000
+    BIO_SCOR          28.900      7.415      3.897      0.000
 
  PHY_SCOR WITH
-    BIO_SCOR          37.889      2.707     13.995      0.000
+    BIO_SCOR          19.272      7.049      2.734      0.006
 
  Means
-    MTH_SCOR          45.613      0.422    108.014      0.000
-    SCI_SCOR          42.630      0.810     52.646      0.000
-    PHY_SCOR          45.049      0.508     88.728      0.000
-    BIO_SCOR          44.481      1.416     31.402      0.000
+    MTH_SCOR          42.219      0.424     99.501      0.000
+    SCI_SCOR          41.825      0.970     43.105      0.000
+    PHY_SCOR          42.745      0.769     55.600      0.000
+    BIO_SCOR          43.238      1.541     28.061      0.000
 
  Variances
-    MTH_SCOR          62.371      4.442     14.040      0.000
-    SCI_SCOR          54.504      2.950     18.479      0.000
-    PHY_SCOR          69.531      3.138     22.160      0.000
-    BIO_SCOR          72.827      3.909     18.632      0.000
+    MTH_SCOR          44.764      6.501      6.886      0.000
+    SCI_SCOR          41.046      4.667      8.795      0.000
+    PHY_SCOR          54.598      3.630     15.041      0.000
+    BIO_SCOR          60.684      9.602      6.320      0.000
 
 Latent Class 3
 
  MTH_SCOR WITH
-    SCI_SCOR          31.336      2.068     15.152      0.000
-    PHY_SCOR          32.486      2.441     13.311      0.000
-    BIO_SCOR          25.800      2.334     11.056      0.000
+    SCI_SCOR          22.726      1.998     11.373      0.000
+    PHY_SCOR          23.516      2.328     10.101      0.000
+    BIO_SCOR          17.722      3.528      5.023      0.000
 
  SCI_SCOR WITH
-    PHY_SCOR          57.725      2.863     20.165      0.000
-    BIO_SCOR          43.964      3.400     12.929      0.000
+    PHY_SCOR          44.185      4.017     10.999      0.000
+    BIO_SCOR          31.352      6.837      4.586      0.000
 
  PHY_SCOR WITH
-    BIO_SCOR          37.889      2.707     13.995      0.000
+    BIO_SCOR          24.646      5.795      4.253      0.000
 
  Means
-    MTH_SCOR          58.991      0.437    134.866      0.000
-    SCI_SCOR          59.350      0.645     92.008      0.000
-    PHY_SCOR          58.208      0.683     85.246      0.000
-    BIO_SCOR          57.138      0.520    109.842      0.000
+    MTH_SCOR          61.029      0.686     89.009      0.000
+    SCI_SCOR          61.304      0.753     81.448      0.000
+    PHY_SCOR          60.096      0.792     75.891      0.000
+    BIO_SCOR          58.662      0.812     72.264      0.000
 
  Variances
-    MTH_SCOR          62.371      4.442     14.040      0.000
-    SCI_SCOR          54.504      2.950     18.479      0.000
-    PHY_SCOR          69.531      3.138     22.160      0.000
-    BIO_SCOR          72.827      3.909     18.632      0.000
+    MTH_SCOR          44.764      6.501      6.886      0.000
+    SCI_SCOR          41.046      4.667      8.795      0.000
+    PHY_SCOR          54.598      3.630     15.041      0.000
+    BIO_SCOR          60.684      9.602      6.320      0.000
 
 Categorical Latent Variables
 
  Means
-    C#1               -0.109      0.264     -0.412      0.680
-    C#2               -0.099      0.183     -0.541      0.588
+    C#1                0.150      0.239      0.628      0.530
+    C#2                0.394      0.188      2.094      0.036
 
 
 QUALITY OF NUMERICAL RESULTS
 
-     Condition Number for the Information Matrix              0.234E-04
+     Condition Number for the Information Matrix              0.197E-06
        (ratio of smallest to largest eigenvalue)
 
 
@@ -468,31 +461,31 @@ RESIDUAL OUTPUT
            Model Estimated Means
               MTH_SCOR      SCI_SCOR      PHY_SCOR      BIO_SCOR
               ________      ________      ________      ________
-               45.553        48.138        46.933        48.630
+               51.593        51.826        51.657        52.191
 
 
            Residuals for Means
               MTH_SCOR      SCI_SCOR      PHY_SCOR      BIO_SCOR
               ________      ________      ________      ________
-                0.004         0.002         0.002         0.002
+                0.001         0.001         0.001         0.000
 
 
            Model Estimated Covariances
               MTH_SCOR      SCI_SCOR      PHY_SCOR      BIO_SCOR
               ________      ________      ________      ________
- MTH_SCOR      62.371
- SCI_SCOR      31.336        54.504
- PHY_SCOR      32.486        57.725        69.531
- BIO_SCOR      25.800        43.964        37.889        72.827
+ MTH_SCOR      44.764
+ SCI_SCOR       3.116        41.046
+ PHY_SCOR       6.497        42.390        54.598
+ BIO_SCOR       1.448        33.671        29.430        60.684
 
 
            Residuals for Covariances
               MTH_SCOR      SCI_SCOR      PHY_SCOR      BIO_SCOR
               ________      ________      ________      ________
- MTH_SCOR      -0.998
- SCI_SCOR      -1.167         0.768
- PHY_SCOR      -1.857         0.961         1.352
- BIO_SCOR      -0.424         1.797         2.418         4.461
+ MTH_SCOR       4.069
+ SCI_SCOR       0.885        -1.655
+ PHY_SCOR       1.300        -1.726        -1.813
+ BIO_SCOR       0.333        -1.700        -1.703        -2.055
 
 
      ESTIMATED MODEL AND RESIDUALS (OBSERVED - ESTIMATED) FOR CLASS 2
@@ -501,31 +494,31 @@ RESIDUAL OUTPUT
            Model Estimated Means
               MTH_SCOR      SCI_SCOR      PHY_SCOR      BIO_SCOR
               ________      ________      ________      ________
-               45.613        42.630        45.049        44.481
+               42.219        41.825        42.745        43.238
 
 
            Residuals for Means
               MTH_SCOR      SCI_SCOR      PHY_SCOR      BIO_SCOR
               ________      ________      ________      ________
-                0.006         0.002         0.002         0.002
+                0.002         0.000         0.000         0.000
 
 
            Model Estimated Covariances
               MTH_SCOR      SCI_SCOR      PHY_SCOR      BIO_SCOR
               ________      ________      ________      ________
- MTH_SCOR      62.371
- SCI_SCOR      31.336        54.504
- PHY_SCOR      32.486        57.725        69.531
- BIO_SCOR      25.800        43.964        37.889        72.827
+ MTH_SCOR      44.764
+ SCI_SCOR      15.283        41.046
+ PHY_SCOR      18.019        41.398        54.598
+ BIO_SCOR      11.119        28.900        19.272        60.684
 
 
            Residuals for Covariances
               MTH_SCOR      SCI_SCOR      PHY_SCOR      BIO_SCOR
               ________      ________      ________      ________
- MTH_SCOR       3.437
- SCI_SCOR       0.521        -3.133
- PHY_SCOR       0.454        -4.667        -5.918
- BIO_SCOR       2.561         0.077        -2.041         2.824
+ MTH_SCOR      -3.985
+ SCI_SCOR      -1.663        -1.936
+ PHY_SCOR      -2.674        -3.509        -5.356
+ BIO_SCOR      -0.027         0.927        -0.378         4.044
 
 
      ESTIMATED MODEL AND RESIDUALS (OBSERVED - ESTIMATED) FOR CLASS 3
@@ -534,31 +527,31 @@ RESIDUAL OUTPUT
            Model Estimated Means
               MTH_SCOR      SCI_SCOR      PHY_SCOR      BIO_SCOR
               ________      ________      ________      ________
-               58.991        59.350        58.208        57.138
+               61.029        61.304        60.096        58.662
 
 
            Residuals for Means
               MTH_SCOR      SCI_SCOR      PHY_SCOR      BIO_SCOR
               ________      ________      ________      ________
-                0.008         0.003         0.003         0.002
+                0.006         0.002         0.002         0.001
 
 
            Model Estimated Covariances
               MTH_SCOR      SCI_SCOR      PHY_SCOR      BIO_SCOR
               ________      ________      ________      ________
- MTH_SCOR      62.371
- SCI_SCOR      31.336        54.504
- PHY_SCOR      32.486        57.725        69.531
- BIO_SCOR      25.800        43.964        37.889        72.827
+ MTH_SCOR      44.764
+ SCI_SCOR      22.726        41.046
+ PHY_SCOR      23.516        44.185        54.598
+ BIO_SCOR      17.722        31.352        24.646        60.684
 
 
            Residuals for Covariances
               MTH_SCOR      SCI_SCOR      PHY_SCOR      BIO_SCOR
               ________      ________      ________      ________
- MTH_SCOR      -2.177
- SCI_SCOR       2.961         2.173
- PHY_SCOR       3.706         3.389         4.171
- BIO_SCOR      -0.021        -1.656        -0.296        -6.530
+ MTH_SCOR       1.859
+ SCI_SCOR       3.656         4.817
+ PHY_SCOR       4.808         6.643         8.773
+ BIO_SCOR       1.057         0.685         2.103        -3.380
 
 
 TECHNICAL 11 OUTPUT
@@ -571,17 +564,17 @@ TECHNICAL 11 OUTPUT
 
      VUONG-LO-MENDELL-RUBIN LIKELIHOOD RATIO TEST FOR 2 (H0) VERSUS 3 CLASSES
 
-          H0 Loglikelihood Value                       -39821.048
-          2 Times the Loglikelihood Difference             89.173
-          Difference in the Number of Parameters                5
-          Mean                                             17.882
-          Standard Deviation                               25.643
-          P-Value                                          0.0220
+          H0 Loglikelihood Value                       -39769.436
+          2 Times the Loglikelihood Difference             90.380
+          Difference in the Number of Parameters               11
+          Mean                                             55.807
+          Standard Deviation                               71.410
+          P-Value                                          0.1976
 
      LO-MENDELL-RUBIN ADJUSTED LRT TEST
 
-          Value                                            87.009
-          P-Value                                          0.0237
+          Value                                            89.369
+          P-Value                                          0.2004
 
 
 TECHNICAL 14 OUTPUT
@@ -602,13 +595,13 @@ TECHNICAL 14 OUTPUT
 
      PARAMETRIC BOOTSTRAPPED LIKELIHOOD RATIO TEST FOR 2 (H0) VERSUS 3 CLASSES
 
-          H0 Loglikelihood Value                       -39821.048
-          2 Times the Loglikelihood Difference             89.173
-          Difference in the Number of Parameters                5
+          H0 Loglikelihood Value                       -39769.436
+          2 Times the Loglikelihood Difference             90.380
+          Difference in the Number of Parameters               11
           Approximate P-Value                              0.0000
-          Successful Bootstrap Draws                            5
+          Successful Bootstrap Draws                           10
 
-     WARNING:  OF THE 5 BOOTSTRAP DRAWS, 4 DRAWS HAD BOTH A SMALLER LRT VALUE THAN THE
+     WARNING:  OF THE 10 BOOTSTRAP DRAWS, 10 DRAWS HAD BOTH A SMALLER LRT VALUE THAN THE
      OBSERVED LRT VALUE AND NOT A REPLICATED BEST LOGLIKELIHOOD VALUE FOR THE 3-CLASS MODEL.
      THIS MEANS THAT THE P-VALUE MAY NOT BE TRUSTWORTHY DUE TO LOCAL MAXIMA.
      INCREASE THE NUMBER OF RANDOM STARTS USING THE LRTSTARTS OPTION.
@@ -628,9 +621,9 @@ The following plots are available:
   Estimated means and observed individual values
   Estimated overall and class-specific distributions
 
-     Beginning Time:  14:06:24
-        Ending Time:  14:06:41
-       Elapsed Time:  00:00:17
+     Beginning Time:  09:52:38
+        Ending Time:  09:53:03
+       Elapsed Time:  00:00:25
 
 
 
