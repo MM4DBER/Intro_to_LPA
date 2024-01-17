@@ -13,10 +13,16 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, eval = TRUE, message = FALSE, warning = FALSE)
-library(prettydoc); library(here)
+library(prettydoc); library(here);library(knitr); library(tidyverse); library(gt) 
 ```
 
-`University of California, Santa Barbara`
+_________________________________________________________________________
+
+![](figures/mm4dber_Logo.jpg){style="float: left;" width="300"}
+
+![](figures/NSF-Logo.png){style="float: left;" width="300"}
+
+## An_Introduction_to_LPA_Using_MplusAutomation
 
 ```{r, echo=FALSE, eval=TRUE, out.width = "60%", out.height= "60%", fig.pos="h"}
 
@@ -58,7 +64,7 @@ ________________________________________________________________________
 knitr::include_graphics(here("figures", "lpa_scat.png"))
 ```
 
-*Figure*. Picture adapted from lecture slides by Karen Nylund-Gibson. 
+*Figure*. Picture adapted from Masyn (2013) 
 
 ________________________________________________________________________
 
@@ -70,7 +76,7 @@ knitr::include_graphics(here("figures", "var_covar_matrix.png"))
 
 ```
 
-*Figure*. Picture adapted from tutorial (Rosenberg, 2019). 
+*Figure*. Picture adapted from tutorial (Rosenberg, 2019)
 
 ________________________________________________________________________
 
@@ -125,7 +131,7 @@ ________________________________________________________________________
 knitr::include_graphics(here("figures", "lpa_m1.png"))
 ```
 
-*Figure*. Picture of "diagonal class-invariant model" adapted from lecture slides by Karen Nylund-Gibson. 
+*Figure*. Picture of "diagonal class-invariant model" adapted from Masyn (2013) 
 
 ________________________________________________________________________
 
@@ -483,7 +489,7 @@ ________________________________________________________________________
 knitr::include_graphics(here("figures", "lpa_m4.png"))
 ```
 
-*Figure*. Picture adapted from lecture slides by Karen Nylund-Gibson. 
+*Figure*. Picture adapted from Masyn (2013) 
 
 ```{r, eval=FALSE}
 lpa_k14  <- lapply(1:4, function(k) { 
@@ -581,7 +587,7 @@ gt(m4_enum)
 
 ________________________________________________________________________
 
-## Produce fit table incuding all models (`m1, m2, m3, m3a, m4`)
+## Produce final table of model fit incuding `all models` 
 
 ```{r, eval=TRUE}
 
@@ -691,7 +697,7 @@ allFit1 %>%
 ```
 ________________________________________________________________________
 
-## Plot profile means and confidence intervals (Model 2; $C=4$)
+## Plot profile means and confidence intervals (`Model 2`)
 
 NOTE: The `plotMixtures()` is used for plotting LPA models only (i.e., means & confidence intervals)
 ```{r}
