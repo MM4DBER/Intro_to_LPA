@@ -1,13 +1,13 @@
 Mplus VERSION 8.6 (Mac)
 MUTHEN & MUTHEN
-01/08/2024   9:45 AM
+01/17/2024   1:05 PM
 
 INPUT INSTRUCTIONS
 
   TITLE:
-  M2a: Class1
+  M3a: Class1
   DATA:
-  FILE = "/Users/agarber/github/Intro_to_LPA/m2a_enum/c_lpa_m2a.dat";
+  FILE = "/Users/agarber/github/Intro_to_LPA/m3a_enum/c_lpa_m3a.dat";
 
   VARIABLE:
   NAMES = rural gender fathed mothed mth_scor sci_scor phy_scor bio_scor;
@@ -22,7 +22,7 @@ INPUT INSTRUCTIONS
   MODEL:
   %c#1%
       [mth_scor-bio_scor];          !!! means are freely estimated
-      mth_scor-bio_scor;            !!! variances are freely estimated
+      mth_scor-bio_scor(1-4);       !!! variances are fixed to equality
       mth_scor with sci_scor(5);    !!! covariances are fixed to equality
       mth_scor with phy_scor(6);
       mth_scor with bio_scor(7);
@@ -32,7 +32,7 @@ INPUT INSTRUCTIONS
 
   ! %c#2%
   ! [mth_scor-bio_scor];
-  ! mth_scor-bio_scor;
+  ! mth_scor-bio_scor(1-4);
   ! mth_scor with sci_scor(5);
   ! mth_scor with phy_scor(6);
   ! mth_scor with bio_scor(7);
@@ -42,7 +42,7 @@ INPUT INSTRUCTIONS
 
   ! %c#3%
   ! [mth_scor-bio_scor];
-  ! mth_scor-bio_scor;
+  ! mth_scor-bio_scor(1-4);
   ! mth_scor with sci_scor(5);
   ! mth_scor with phy_scor(6);
   ! mth_scor with bio_scor(7);
@@ -52,7 +52,7 @@ INPUT INSTRUCTIONS
 
   ! %c#4%
   ! [mth_scor-bio_scor];
-  ! mth_scor-bio_scor;
+  ! mth_scor-bio_scor(1-4);
   ! mth_scor with sci_scor(5);
   ! mth_scor with phy_scor(6);
   ! mth_scor with bio_scor(7);
@@ -85,7 +85,7 @@ INPUT INSTRUCTIONS
 
 
 
-M2a: Class1
+M3a: Class1
 
 SUMMARY OF ANALYSIS
 
@@ -144,7 +144,7 @@ Random Starts Specifications
   Random seed for generating random starts                       0
 
 Input data file(s)
-  /Users/agarber/github/Intro_to_LPA/m2a_enum/c_lpa_m2a.dat
+  /Users/agarber/github/Intro_to_LPA/m3a_enum/c_lpa_m3a.dat
 Input data format  FREE
 
 
@@ -442,9 +442,9 @@ The following plots are available:
   Estimated means and observed individual values
   Estimated overall and class-specific distributions
 
-     Beginning Time:  09:45:57
-        Ending Time:  09:45:59
-       Elapsed Time:  00:00:02
+     Beginning Time:  13:05:27
+        Ending Time:  13:05:28
+       Elapsed Time:  00:00:01
 
 
 

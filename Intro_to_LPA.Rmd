@@ -33,12 +33,6 @@ Download repository here: https://github.com/MM4DBER/Intro_to_LPA
 
 ________________________________________________________________________
 
-Data source:
-
-The example presented in this tutorial utilizes 4 test score measures (Math, Science, Physics, and Biology) from the public-use data source, *The Longitudinal Survey of American Youth* (**LSAY**):  [$\color{blue}{\text{See documentation here}}$](https://www.lsay.org/)
-
-________________________________________________________________________
-
 Load packages
 ```{r, eval=TRUE}
 
@@ -57,34 +51,6 @@ ________________________________________________________________________
 
 ________________________________________________________________________
 
-**The variance-covariance matrix**
-
-- Models are presented in the order described in the book chapter by Masyn (2013; p.591).
-- An additional model (2a) demonstrates the specification of covariances fixed to equality across class.
-- NOTE: Many model specifications are possible. Among variance and covariance parameter groups any combination of these parameters can be freely estimated or fixed. 
-
-> Example: For an LPA model with 4 indicators the variance-covariance matrix includes 4 variance and 7 covariance parameters per class. A methods effect may be indentified in a survey (e.g., similar item wording) which provides a rationale to freely estimate the associated covariance. However, the remaining 6 covariances may be negligible in magnitude providing an empirical basis to fix this sub-set of covariances at zero. 
-
-```{r, echo=FALSE, eval=TRUE, out.width = "60%", out.height= "60%", fig.pos="h"}
-
-knitr::include_graphics(here("figures", "var_covar_matrix.png"))
-
-```
-
-*Figure*. Picture adapted from tutorial (Rosenberg, 2019). 
-
-________________________________________________________________________
-
-**Models 1-4 from book chapter in Masyn (2013):**
-
-- `model 1`: Equal variances, and covariances fixed to 0 
-- `model 2`: Free variances and covariances fixed to 0   
-- `model 2a`: Free variances, and equal covariances (**extra model**)
-- `model 3`: Equal variances, and free covariances 
-- `model 4`: Free variances and free covariances  
-
-________________________________________________________________________
-
 **Which variance-covariance specification is appropriate?**
 
 ```{r, echo=FALSE, eval=TRUE, out.width = "60%", out.height= "60%", fig.pos="h"}
@@ -96,8 +62,50 @@ knitr::include_graphics(here("figures", "lpa_scat.png"))
 
 ________________________________________________________________________
 
+**The variance-covariance matrix:**
+
+```{r, echo=FALSE, eval=TRUE, out.width = "60%", out.height= "60%", fig.pos="h"}
+
+knitr::include_graphics(here("figures", "var_covar_matrix.png"))
+
+```
+
+*Figure*. Picture adapted from tutorial (Rosenberg, 2019). 
+
+________________________________________________________________________
+
+**Terminology for specifying variance-covariance:**
+
+- `Equal variances`: Variances are fixed to equality across class. (i.e., variances are the same for each class)
+- `Free variances`: Variances are freely estimated across class (i.e., variances vary by class)
+- `Covariances fixed to 0`: No covariances are estimated (i.e., the off-diagonal cells of the matrix are zero)
+- `Free covariances`: The covariances are freely estimated (e.g., a 4-class model has 6 covariance parameters estimated per class)
+- `Equal covariances`: The covariances are fixed to equality across class (i.e., covariances are equal across class)
+
+
+________________________________________________________________________
+
+**Model presentation order:**
+
+- Models are presented in the order described in the book chapter by Masyn (2013; p.591).
+- An additional model (3a) demonstrates the specification of covariances fixed to equality across class.
+- NOTE: Many model specifications are possible. Among variance and covariance parameter groups any combination of these parameters can be freely estimated or fixed. 
+
+> Example: For an LPA model with 4 indicators the variance-covariance matrix includes 4 variance and 7 covariance parameters per class. A methods effect may be indentified in a survey (e.g., similar item wording) which provides a rationale to freely estimate the associated covariance. However, the remaining 6 covariances may be negligible in magnitude providing an empirical basis to fix this sub-set of covariances at zero. 
+
+**Models 1-4 from book chapter in Masyn (2013):**
+
+- `model 1`: Equal variances, and covariances fixed to 0 
+- `model 2`: Free variances and covariances fixed to 0   
+- `model 3`: Equal variances, and free covariances
+- `model 3a`: Equal variances, and equal covariances (**extra model**)
+- `model 4`: Free variances and free covariances  
+
+________________________________________________________________________
 
 ## Example: Math, Science, Physics, and Biology test score measures (LSAY).
+
+**Data source:** The example presented in this tutorial utilizes 4 test score measures (Math, Science, Physics, and Biology) from the public-use data source, *The Longitudinal Survey of American Youth* (**LSAY**):  [$\color{blue}{\text{See documentation here}}$](https://www.lsay.org/)
 
 ________________________________________________________________________
 
@@ -107,6 +115,7 @@ Read in data
 lsay_data <- read_csv(here("data", "lsay_lpa.csv"))
 
 ```
+
 ________________________________________________________________________
 
 ## `model 1`: Equal variances (fixed) & covariances fixed to zero
@@ -120,7 +129,7 @@ knitr::include_graphics(here("figures", "lpa_m1.png"))
 
 ________________________________________________________________________
 
-**Note:** Model variance-covariance specifications are **stated explicitly** here for pedagogical purposes.`Model 1` can be replicated by removing the syntax under the `MODEL=` command as this is the default specification in Mplus. 
+**Note:** Model variance-covariance specifications are **stated explicitly** here for pedagogical purposes. `Model 1` can be replicated by removing the syntax under the `MODEL=` command as this is the default specification in Mplus. 
 
 ```{r, eval=FALSE}
 lpa_k14  <- lapply(1:4, function(k) { 
@@ -271,104 +280,6 @@ gt(m2_enum)
 
 ________________________________________________________________________
 
-## `model 2a`: Free variances & equal (fixed) covariances 
-
-```{r, eval=FALSE}
-lpa_k14  <- lapply(1:4, function(k) { 
-  z2 <- if_else(k < 2 , '!' , '')
-  z3 <- if_else(k < 3 , '!' , '')
-  z4 <- if_else(k < 4 , '!' , '')
-  
-lpa_enum  <- mplusObject(
-      
-  TITLE = glue("M2a: Class{k} "), 
-  
-  VARIABLE = glue(
-   "usevar = mth_scor-bio_scor;
-    classes = c({k}); "),
-  
-  ANALYSIS = 
-   "estimator = mlr; 
-    type = mixture;
-    starts = 200 50; 
-    processors = 10;",
-  
-  MODEL = glue(
-    
-   "%c#1%
-    [mth_scor-bio_scor];          !!! means are freely estimated
-    mth_scor-bio_scor;            !!! variances are freely estimated
-    mth_scor with sci_scor(5);    !!! covariances are fixed to equality
-    mth_scor with phy_scor(6);
-    mth_scor with bio_scor(7);
-    sci_scor with phy_scor(8);
-    sci_scor with bio_scor(9);
-    phy_scor with bio_scor(10);
-   
-{z2} %c#2%
-{z2} [mth_scor-bio_scor];
-{z2} mth_scor-bio_scor;
-{z2} mth_scor with sci_scor(5);   
-{z2} mth_scor with phy_scor(6);
-{z2} mth_scor with bio_scor(7);
-{z2} sci_scor with phy_scor(8);
-{z2} sci_scor with bio_scor(9);
-{z2} phy_scor with bio_scor(10);
-     
-{z3} %c#3%
-{z3} [mth_scor-bio_scor];
-{z3} mth_scor-bio_scor;
-{z3} mth_scor with sci_scor(5);   
-{z3} mth_scor with phy_scor(6);
-{z3} mth_scor with bio_scor(7);
-{z3} sci_scor with phy_scor(8);
-{z3} sci_scor with bio_scor(9);
-{z3} phy_scor with bio_scor(10);
-     
-{z4} %c#4%
-{z4} [mth_scor-bio_scor];
-{z4} mth_scor-bio_scor;
-{z4} mth_scor with sci_scor(5);   
-{z4} mth_scor with phy_scor(6);
-{z4} mth_scor with bio_scor(7);
-{z4} sci_scor with phy_scor(8);
-{z4} sci_scor with bio_scor(9);
-{z4} phy_scor with bio_scor(10);"),
-  
-  OUTPUT = "sampstat residual tech11 tech14;",
-  
-  PLOT = 
-    "type = plot3; 
-     series = mth_scor-bio_scor(*);",
-  
-  usevariables = colnames(lsay_data),
-  rdata = lsay_data)
-
-lpa_enum_fit <- mplusModeler(lpa_enum, 
-    dataout=glue(here("m2a_enum", "c_lpa_m2a.dat")),
-    modelout=glue(here("m2a_enum", "c{k}_lpa_m2a.inp")) ,
-    check=TRUE, run = TRUE, hashfilename = FALSE)
-})
-
-```
-
-________________________________________________________________________
-
-Model 2a: Produce model fit table
-```{r}
-m2a_output <- readModels(here("m2a_enum"), quiet = TRUE)
-
-m2a_enum <- LatexSummaryTable(m2a_output,                                     
-                keepCols=c("Title","Parameters", "LL", "BIC",               
-                           "aBIC", "BLRT_PValue", "T11_VLMR_PValue",
-                           "Observations"),
-                sortBy = "Title")                                           
-
-gt(m2a_enum)
-```
-
-________________________________________________________________________
-
 ## `model 3`: Equal (fixed) variances & free covariances 
 
 ```{r, eval=FALSE}
@@ -463,6 +374,104 @@ m3_enum <- LatexSummaryTable(m3_output,
                 sortBy = "Title")                                         
 
 gt(m3_enum)
+```
+
+________________________________________________________________________
+
+## `model 3a`: Equal variances & equal (fixed) covariances 
+
+```{r, eval=FALSE}
+lpa_k14  <- lapply(1:4, function(k) { 
+  z2 <- if_else(k < 2 , '!' , '')
+  z3 <- if_else(k < 3 , '!' , '')
+  z4 <- if_else(k < 4 , '!' , '')
+  
+lpa_enum  <- mplusObject(
+      
+  TITLE = glue("M3a: Class{k} "), 
+  
+  VARIABLE = glue(
+   "usevar = mth_scor-bio_scor;
+    classes = c({k}); "),
+  
+  ANALYSIS = 
+   "estimator = mlr; 
+    type = mixture;
+    starts = 200 50; 
+    processors = 10;",
+  
+  MODEL = glue(
+    
+   "%c#1%
+    [mth_scor-bio_scor];          !!! means are freely estimated
+    mth_scor-bio_scor(1-4);       !!! variances are fixed to equality
+    mth_scor with sci_scor(5);    !!! covariances are fixed to equality
+    mth_scor with phy_scor(6);
+    mth_scor with bio_scor(7);
+    sci_scor with phy_scor(8);
+    sci_scor with bio_scor(9);
+    phy_scor with bio_scor(10);
+   
+{z2} %c#2%
+{z2} [mth_scor-bio_scor];
+{z2} mth_scor-bio_scor(1-4);
+{z2} mth_scor with sci_scor(5);   
+{z2} mth_scor with phy_scor(6);
+{z2} mth_scor with bio_scor(7);
+{z2} sci_scor with phy_scor(8);
+{z2} sci_scor with bio_scor(9);
+{z2} phy_scor with bio_scor(10);
+     
+{z3} %c#3%
+{z3} [mth_scor-bio_scor];
+{z3} mth_scor-bio_scor(1-4);
+{z3} mth_scor with sci_scor(5);   
+{z3} mth_scor with phy_scor(6);
+{z3} mth_scor with bio_scor(7);
+{z3} sci_scor with phy_scor(8);
+{z3} sci_scor with bio_scor(9);
+{z3} phy_scor with bio_scor(10);
+     
+{z4} %c#4%
+{z4} [mth_scor-bio_scor];
+{z4} mth_scor-bio_scor(1-4);
+{z4} mth_scor with sci_scor(5);   
+{z4} mth_scor with phy_scor(6);
+{z4} mth_scor with bio_scor(7);
+{z4} sci_scor with phy_scor(8);
+{z4} sci_scor with bio_scor(9);
+{z4} phy_scor with bio_scor(10);"),
+  
+  OUTPUT = "sampstat residual tech11 tech14;",
+  
+  PLOT = 
+    "type = plot3; 
+     series = mth_scor-bio_scor(*);",
+  
+  usevariables = colnames(lsay_data),
+  rdata = lsay_data)
+
+lpa_enum_fit <- mplusModeler(lpa_enum, 
+    dataout=glue(here("m3a_enum", "c_lpa_m3a.dat")),
+    modelout=glue(here("m3a_enum", "c{k}_lpa_m3a.inp")) ,
+    check=TRUE, run = TRUE, hashfilename = FALSE)
+})
+
+```
+
+________________________________________________________________________
+
+Model 3a: Produce model fit table
+```{r}
+m3a_output <- readModels(here("m3a_enum"), quiet = TRUE)
+
+m3a_enum <- LatexSummaryTable(m3a_output,                                     
+                keepCols=c("Title","Parameters", "LL", "BIC",               
+                           "aBIC", "BLRT_PValue", "T11_VLMR_PValue",
+                           "Observations"),
+                sortBy = "Title")                                           
+
+gt(m3a_enum)
 ```
 
 ________________________________________________________________________
@@ -572,11 +581,11 @@ gt(m4_enum)
 
 ________________________________________________________________________
 
-## Produce fit table incuding all models (`m1-m4`)
+## Produce fit table incuding all models (`m1, m2, m3, m3a, m4`)
 
 ```{r, eval=TRUE}
 
-allFit <- rbind(m1_enum,m2_enum,m2a_enum,m3_enum,m4_enum)
+allFit <- rbind(m1_enum,m2_enum,m3_enum,m3a_enum,m4_enum)
                    
 allFit1 <- allFit %>% 
   mutate(aBIC = -2*LL+Parameters*log((Observations+2)/24)) %>% 
@@ -638,17 +647,17 @@ allFit1 %>%
     label = "Model-2",
     rows = 5:8) %>%
   tab_row_group(
-    label = "Model-2a",
+    label = "Model-3",
     rows = 9:12) %>%
   tab_row_group(
-    label = "Model-3",
+    label = "Model-3a",
     rows = 13:16) %>%
   tab_row_group(
     label = "Model-4",
     rows = 17:20) %>%
   row_group_order(
-      groups = c("Model-1","Model-2","Model-2a",
-                 "Model-3","Model-4")) %>% 
+      groups = c("Model-1","Model-2","Model-3",
+                 "Model-3a","Model-4")) %>% 
   tab_style(style = list(cell_text(weight = "bold")),
     locations = list(
     cells_body(columns = BIC, row = BIC == min(BIC[c(1:4)])),
@@ -700,6 +709,8 @@ ________________________________________________________________________
 # References
 
 Hallquist, M. N., & Wiley, J. F. (2018). MplusAutomation: An R Package for Facilitating Large-Scale Latent Variable Analyses in Mplus. Structural equation modeling: a multidisciplinary journal, 25(4), 621-638.
+
+Masyn, K. E. (2013). Latent class analysis and finite mixture modeling.
 
 Miller, J. D., Hoffer, T., Suchner, R., Brown, K., & Nelson, C. (1992). LSAY codebook. Northern Illinois University.
 
