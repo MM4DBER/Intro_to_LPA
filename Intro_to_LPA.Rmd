@@ -82,11 +82,11 @@ ________________________________________________________________________
 
 **Terminology for specifying variance-covariance:**
 
-- `Equal variances`: Variances are fixed to equality across class. (i.e., variances are the same for each class)
-- `Free variances`: Variances are freely estimated across class (i.e., variances vary by class)
+- `Equal variances`: Variances are fixed to equality across class. (i.e., variances are constrained to be equal for each class)
+- `Free variances`: Variances parameters are freely estimated across class (i.e., variances vary by class)
 - `Covariances fixed to 0`: No covariances are estimated (i.e., the off-diagonal cells of the matrix are zero)
 - `Free covariances`: The covariances are freely estimated (e.g., a 4-class model has 6 covariance parameters estimated per class)
-- `Equal covariances`: The covariances are fixed to equality across class (i.e., covariances are equal across class)
+- `Equal covariances`: The covariances are fixed to equality across class (i.e., covariances are constrained to be equal across class)
 
 
 ________________________________________________________________________
@@ -125,6 +125,8 @@ lsay_data <- read_csv(here("data", "lsay_lpa.csv"))
 ________________________________________________________________________
 
 ## `model 1`: Equal variances (fixed) & covariances fixed to zero
+
+In **model-1** the item variances are fixed to equality across latent classes (4 item variances per-class) and covariance parameters are fixed to zero (not estimated). In the applied example, each of the 4 items has a  unique variance estimated but the variances are held to equality across each of the latent classes in the example (`4*1= 4 variance parameters`). Relating this to the variance-covariance matrix this model is also named the, **class-invariant, diagonal model**. This is the default model in Mplus because it is a relatively parsimonious model. 
 
 ```{r, echo=FALSE, eval=TRUE, out.width = "60%", out.height= "60%", fig.pos="h"}
 
@@ -214,6 +216,8 @@ ________________________________________________________________________
 
 ## `model 2`: Free variances & covariances fixed to zero
 
+In **model-2** the variances are freely estimated across latent classes (4 item variances per-class; `4*4=16 variance parameters`) and covariance parameters are fixed to zero. In regards to the variance-covariance matrix this model is also named the, **class-varying, diagonal model**. 
+
 ```{r, eval=FALSE}
 lpa_k14  <- lapply(1:4, function(k) { 
   z2 <- if_else(k < 2 , '!' , '')
@@ -287,6 +291,8 @@ gt(m2_enum)
 ________________________________________________________________________
 
 ## `model 3`: Equal (fixed) variances & free covariances 
+
+In **model-3** the variances are fixed to equality across latent classes and covariance parameters are freely estimated. In relation to the variance-covariance matrix this model is also named the, **class-invariant, non-diagonal model**. In the example below a total of `4` variance parameters and `24` covariance parameters are estimated (i.e., `6 covariances per-class`). Note that although this example demonstrates a model with all covariances estimated, any number of the covariance (or variance) parameters can be either fixed or freely estimated. For example, 2 item covariances may have substantive meaning while no theoretical precedent exists for estimating the remaining 4 pairwise item covariances. 
 
 ```{r, eval=FALSE}
 lpa_k14  <- lapply(1:4, function(k) { 
@@ -386,6 +392,8 @@ ________________________________________________________________________
 
 ## `model 3a`: Equal variances & equal (fixed) covariances 
 
+In **model-3a** the variances are fixed to equality across latent classes and covariance parameters are fixed to equality across the 4 latent classes. In-other-words, this model estimates 4 item variances & 6 item covariances. Each unique item has a separate variance estimated and each pairwise covariance has a separate covariance estimated but all the variance-covariance parameters are held to equality across class. 
+
 ```{r, eval=FALSE}
 lpa_k14  <- lapply(1:4, function(k) { 
   z2 <- if_else(k < 2 , '!' , '')
@@ -484,6 +492,8 @@ ________________________________________________________________________
 
 ## `model 4`: Free variances & free covariances 
 
+In **model-4** the variances are freely estimated across latent classes (4 item variances per-class; `4*4=16 variance parameters`) and covariance are freely estimated (6 pairwise item covariances per-class; `6*4=24 covariance parameters`). Note that although this example demonstrates a model with all variance/covariance parameters estimated, any number of the covariance (or variance) parameters can be either fixed or freely estimated.
+
 ```{r, echo=FALSE, eval=TRUE, out.width = "60%", out.height= "60%", fig.pos="h"}
 
 knitr::include_graphics(here("figures", "lpa_m4.png"))
@@ -573,6 +583,7 @@ lpa_enum_fit <- mplusModeler(lpa_enum,
 ________________________________________________________________________
 
 Model 4: Produce model fit table
+
 ```{r}
 m4_output <- readModels(here("m4_enum"), quiet = TRUE)
 
@@ -695,6 +706,17 @@ allFit1 %>%
       ))
 
 ```
+
+**Interpreting results:** 
+
+For **model-1** the information criterion fit indices (BIC, aBIC, CAIC, AWE) bottom-out at the 4-class model. Additionally, the model comparison tests (BLRT, VLMR, BF, cmPk) are in agreement indicating best fit for the 4-class solution. Note that in this case it would be recommended to enumerate additional classes as it is not clear whether a higher class model would fit better than the solution shown. 
+
+**Model-2** Shows a similar pattern with all fit summary statistics in agreement indicating the 4-class solution. 
+
+**Model-3** shows mixed endorsement across the fit indices. The 3-class solution is endorsed by the BIC and BF (bayes factor) and the 2-class solution is endorsed by the CAIC and AWE. Model 3a shows the most consistent agreement for the 4-class solution (BIC, aBIC, CAIC, BF). However, the AWE and VLMR indicate the 2-class solution. 
+
+Finally, for **Model-4** the most consistent solution endorsed is the 3-class solution with five of the seven fit indices in agreement (BIC, CAIC, VLMR, BF, cmPK). For this model, the CAIC is contra-indicative and endorses the 3-class solution.
+
 ________________________________________________________________________
 
 ## Plot profile means and confidence intervals (`Model 2`)
