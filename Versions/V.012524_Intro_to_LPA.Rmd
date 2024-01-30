@@ -48,7 +48,6 @@ library(MplusAutomation)
 library(here)
 library(gt)
 library(tidyLPA)
-library(patchwork)
 
 ```
 
@@ -141,12 +140,10 @@ ________________________________________________________________________
 **Note:** Model variance-covariance specifications are **stated explicitly** here for pedagogical purposes. `Model 1` can be replicated by removing the syntax under the `MODEL=` command as this is the default specification in Mplus. 
 
 ```{r, eval=FALSE}
-lpa_m1  <- lapply(1:6, function(k) { 
+lpa_k14  <- lapply(1:4, function(k) { 
   z2 <- if_else(k < 2 , '!' , '')
   z3 <- if_else(k < 3 , '!' , '')
   z4 <- if_else(k < 4 , '!' , '')
-  z5 <- if_else(k < 5 , '!' , '')
-  z6 <- if_else(k < 6 , '!' , '')
   
 lpa_enum  <- mplusObject(
       
@@ -168,9 +165,9 @@ lpa_enum  <- mplusObject(
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     
      %c#1%
-     [mth_scor-bio_scor];     !!! means are are freely estimated  (default)
-     mth_scor-bio_scor(1-4);  !!! variances are fixed to equality (default)
-                              !!! covariances are fixed to zero   (default)
+     [mth_scor-bio_scor];     !!! means are are freely estimated
+     mth_scor-bio_scor(1-4);  !!! variances are fixed to equality
+                              !!! covariances are fixed to zero (default)
 {z2} %c#2%
 {z2} [mth_scor-bio_scor];
 {z2} mth_scor-bio_scor(1-4);
@@ -181,15 +178,7 @@ lpa_enum  <- mplusObject(
      
 {z4} %c#4%
 {z4} [mth_scor-bio_scor];
-{z4} mth_scor-bio_scor(1-4);
-
-{z5} %c#5%
-{z5} [mth_scor-bio_scor];
-{z5} mth_scor-bio_scor(1-4);
-
-{z6} %c#6%
-{z6} [mth_scor-bio_scor];
-{z6} mth_scor-bio_scor(1-4);"),
+{z4} mth_scor-bio_scor(1-4);"),
   
   OUTPUT = "sampstat residual tech11 tech14;",
   
@@ -200,7 +189,7 @@ lpa_enum  <- mplusObject(
   usevariables = colnames(lsay_data),
   rdata = lsay_data)
 
-lpa_m1_fit <- mplusModeler(lpa_enum, 
+lpa_enum_fit <- mplusModeler(lpa_enum, 
     dataout=glue(here("m1_enum", "c_lpa_m1.dat")),
     modelout=glue(here("m1_enum", "c{k}_lpa_m1.inp")) ,
     check=TRUE, run = TRUE, hashfilename = FALSE)
@@ -230,12 +219,10 @@ ________________________________________________________________________
 In **model-2** the variances are freely estimated across latent classes (4 item variances per-class; `4*4=16 variance parameters`) and covariance parameters are fixed to zero. In regards to the variance-covariance matrix this model is also named the, **class-varying, diagonal model**. 
 
 ```{r, eval=FALSE}
-lpa_k14  <- lapply(1:6, function(k) { 
+lpa_k14  <- lapply(1:4, function(k) { 
   z2 <- if_else(k < 2 , '!' , '')
   z3 <- if_else(k < 3 , '!' , '')
   z4 <- if_else(k < 4 , '!' , '')
-  z5 <- if_else(k < 5 , '!' , '')
-  z6 <- if_else(k < 6 , '!' , '')
   
 lpa_enum  <- mplusObject(
       
@@ -267,17 +254,7 @@ lpa_enum  <- mplusObject(
      
 {z4} %c#4%
 {z4} [mth_scor-bio_scor];
-{z4} mth_scor-bio_scor;
-
-{z5} %c#5%
-{z5} [mth_scor-bio_scor];
-{z5} mth_scor-bio_scor;
-
-{z6} %c#6%
-{z6} [mth_scor-bio_scor];
-{z6} mth_scor-bio_scor;
-
-"),
+{z4} mth_scor-bio_scor;"),
   
   OUTPUT = "sampstat residual tech11 tech14;",
   
@@ -682,100 +659,80 @@ allFit1 %>%
            scales::number(x, accuracy = .1))) %>%
   tab_row_group(
     label = "Model-1",
-    rows = 1:6) %>%
+    rows = 1:4) %>%
   tab_row_group(
     label = "Model-2",
-    rows = 7:12) %>%
+    rows = 5:8) %>%
   tab_row_group(
     label = "Model-3",
-    rows = 13:16) %>%
+    rows = 9:12) %>%
   tab_row_group(
     label = "Model-3a",
-    rows = 17:20) %>%
+    rows = 13:16) %>%
   tab_row_group(
     label = "Model-4",
-    rows = 21:24) %>%
+    rows = 17:20) %>%
   row_group_order(
       groups = c("Model-1","Model-2","Model-3",
                  "Model-3a","Model-4")) %>% 
-tab_style(style = list(cell_text(weight = "bold")),
-  locations = list(
-  cells_body(columns = BIC, row = BIC == min(BIC[c(1:6)])),
-  cells_body(columns = BIC, row = BIC == min(BIC[c(7:12)])),
-  cells_body(columns = BIC, row = BIC == min(BIC[c(13:16)])),
-  cells_body(columns = BIC, row = BIC == min(BIC[c(17:20)])),
-  cells_body(columns = BIC, row = BIC == min(BIC[c(21:24)])),
-  cells_body(columns = aBIC, row = aBIC == min(aBIC[c(1:6)])),
-  cells_body(columns = aBIC, row = aBIC == min(aBIC[c(7:12)])),
-  cells_body(columns = aBIC, row = aBIC == min(aBIC[c(13:16)])),
-  cells_body(columns = aBIC, row = aBIC == min(aBIC[c(17:20)])),
-  cells_body(columns = aBIC, row = aBIC == min(aBIC[c(21:24)])),
-  cells_body(columns = CAIC, row = CAIC == min(CAIC[c(1:6)])),
-  cells_body(columns = CAIC, row = CAIC == min(CAIC[c(7:12)])),
-  cells_body(columns = CAIC, row = CAIC == min(CAIC[c(13:16)])),
-  cells_body(columns = CAIC, row = CAIC == min(CAIC[c(17:20)])),
-  cells_body(columns = CAIC, row = CAIC == min(CAIC[c(21:24)])),
-  cells_body(columns = AWE, row = AWE == min(AWE[c(1:6)])),
-  cells_body(columns = AWE, row = AWE == min(AWE[c(7:12)])),
-  cells_body(columns = AWE, row = AWE == min(AWE[c(13:16)])),
-  cells_body(columns = AWE, row = AWE == min(AWE[c(17:20)])),
-  cells_body(columns = AWE, row = AWE == min(AWE[c(21:24)])),
-  cells_body(columns = cmPk, row =  cmPk > .001),
-  cells_body(columns = BF, row =  BF > 10),
-  cells_body(columns =  T11_VLMR_PValue,
-  row =ifelse(T11_VLMR_PValue < .001 & lead(T11_VLMR_PValue) > .001, T11_VLMR_PValue < .001, NA)),
-  cells_body(columns =  BLRT_PValue,
-  row =ifelse(BLRT_PValue < .001 & lead(BLRT_PValue) > .001, BLRT_PValue < .001, NA))))
+  tab_style(style = list(cell_text(weight = "bold")),
+    locations = list(
+    cells_body(columns = BIC, row = BIC == min(BIC[c(1:4)])),
+    cells_body(columns = BIC, row = BIC == min(BIC[c(5:8)])),
+    cells_body(columns = BIC, row = BIC == min(BIC[c(9:12)])),
+    cells_body(columns = BIC, row = BIC == min(BIC[c(13:16)])),
+    cells_body(columns = BIC, row = BIC == min(BIC[c(17:20)])),
+    cells_body(columns = aBIC, row = aBIC == min(aBIC[c(1:4)])),
+    cells_body(columns = aBIC, row = aBIC == min(aBIC[c(5:8)])),
+    cells_body(columns = aBIC, row = aBIC == min(aBIC[c(9:12)])),
+    cells_body(columns = aBIC, row = aBIC == min(aBIC[c(13:16)])),
+    cells_body(columns = aBIC, row = aBIC == min(aBIC[c(17:20)])),
+    cells_body(columns = CAIC, row = CAIC == min(CAIC[c(1:4)])),
+    cells_body(columns = CAIC, row = CAIC == min(CAIC[c(5:8)])),
+    cells_body(columns = CAIC, row = CAIC == min(CAIC[c(9:12)])),
+    cells_body(columns = CAIC, row = CAIC == min(CAIC[c(13:16)])),
+    cells_body(columns = CAIC, row = CAIC == min(CAIC[c(17:20)])),
+    cells_body(columns = AWE, row = AWE == min(AWE[c(1:4)])),
+    cells_body(columns = AWE, row = AWE == min(AWE[c(5:8)])),
+    cells_body(columns = AWE, row = AWE == min(AWE[c(9:12)])),
+    cells_body(columns = AWE, row = AWE == min(AWE[c(13:16)])),
+    cells_body(columns = AWE, row = AWE == min(AWE[c(17:20)])),
+    cells_body(columns = cmPk, row =  cmPk > .001),
+    cells_body(columns = BF, row =  BF > 10),
+    cells_body(columns =  T11_VLMR_PValue,
+    row =ifelse(T11_VLMR_PValue < .001 & lead(T11_VLMR_PValue) > .001, T11_VLMR_PValue < .001, NA)),
+    cells_body(columns =  BLRT_PValue,
+    row =ifelse(BLRT_PValue < .001 & lead(BLRT_PValue) > .001, BLRT_PValue < .001, NA))
+      ))
 
 ```
 
 **Interpreting results:** 
 
-For **model-1** the information criteria fit indices (BIC, aBIC, CAIC, AWE) show incremental decreases in the statistic value as class number increases with the minimum value for each IC index at the 6-class model (note; 1-6 class models enumerated). The model comparison tests (BLRT, VLMR, BF, cmPk) show mixed results: The VLMR endorses the 4-class solution while the BLRT, BF, and cmPk are inconclusive. Note, that with the exception of the VLMR the remaining summary statistics are inconclusive at picking a class solution among the 6 models enumerated with this variance/covariance specification. This is because it is not clear from this table whether a model with a greater number of classes would fit better than the set of solutions shown. This pattern of incremental drop in fit values is not uncommon in LPA analyses and in this context substantive factors such as the discrimination of the class patterns should also be considered. However, when looking across variance-covariance models this set of solutions has significantly higher values across all information criteria indicating that the alternative variance/covariance models have better fit to the data (e.g., `model-2`,..., `model-4`). 
+For **model-1** the information criterion fit indices (BIC, aBIC, CAIC, AWE) bottom-out at the 4-class model. Additionally, the model comparison tests (BLRT, VLMR, BF, cmPk) are in agreement indicating best fit for the 4-class solution. Note that in this case it would be recommended to enumerate additional classes as it is not clear whether a higher class model would fit better than the solution shown. 
 
-**Model-2** Shows a similar pattern to model-1 with 7 of the 8 fit summary statistics endorsing the 6-class solution. The exception being the VLMR which endorses the 4-class solution. To demonstrate the specification difference between models 1 and 2, namely the freeing of the variance parameters across class, these solutions have been plotted side-by-side (see figure below).
+**Model-2** Shows a similar pattern with all fit summary statistics in agreement indicating the 4-class solution. 
 
-**Model-3** shows mixed endorsement across the fit indices. The 3-class solution is endorsed by the BIC and BF (bayes factor) and the 2-class solution is endorsed by the CAIC and AWE. Model 3a shows the most consistent agreement for the 4-class solution (BIC, aBIC, CAIC, BF). However, the AWE and VLMR indicate the 2-class solution. Looking across the variance/covariance specification models this set of models shows a singficant improvement in model fit relative to model-1 & model-2. 
+**Model-3** shows mixed endorsement across the fit indices. The 3-class solution is endorsed by the BIC and BF (bayes factor) and the 2-class solution is endorsed by the CAIC and AWE. Model 3a shows the most consistent agreement for the 4-class solution (BIC, aBIC, CAIC, BF). However, the AWE and VLMR indicate the 2-class solution. 
 
-**Model-3a** shows mixed support for the 2-class and 4-class solutions across the summary statistics. The 4-class solution is endorsed by the BIC, aBIC, CAIC, and BF. In contrast, the 2-class solution is endorsed by the AWE and VLMR. Models 3 and 3a overall have IC values that are very close in magnitude showing no clear support for one over the other. 
-
-Finally, for **Model-4** the most consistent solution endorsed is the 3-class solution with five of the seven fit indices in agreement (BIC, CAIC, VLMR, BF, cmPK). For this model, the CAIC is contra-indicative and endorses the 3-class solution. Overall, this model has the lowest values across the information criteria so based on these statistics it has better fit based on this set of statistics. However, it is important to note that other substantive factors and considerations of parsimony should be considered in choosing the final model. 
+Finally, for **Model-4** the most consistent solution endorsed is the 3-class solution with five of the seven fit indices in agreement (BIC, CAIC, VLMR, BF, cmPK). For this model, the CAIC is contra-indicative and endorses the 3-class solution.
 
 ________________________________________________________________________
 
-## Plot comparison of `Model-1` and `Model 2` (variances; fixed to equality V. freely estimated): 
+## Plot profile means and confidence intervals (`Model 2`)
 
-> The plot on the left illustrates variances constrained to equality across class while the plot on the right has variances which are freely estimated across the 6 classes.
-
-NOTE: The `plotMixtures()` function is used for plotting LPA models only (i.e., means & variances)
+NOTE: The `plotMixtures()` is used for plotting LPA models only (i.e., means & confidence intervals)
 ```{r}
-a <- plotMixtures(m1_output$c6_lpa_m1.out,
+plotMixtures(m2_output$c4_lpa_m2.out,
   ci = 0.95, bw = FALSE) 
-
-b <- plotMixtures(m2_output$c6_lpa_m2.out,
-  ci = 0.95, bw = FALSE) 
-
-a + labs(title = "Variances fixed to equality") +
-b + labs(title = "Variances freely estimated")
 ```
 
-*Figure.* Here we see an ordered solution for model-1 and model-2. 
+*Figure.* Here we see an ordered solution.
 
 This result might be anticipated given that the correlation between test scores ranges from moderate to high (*r* = .57 - .95).
 
 ________________________________________________________________________
 
-## Plot conditional means & variances: `Model-4, C=3` (free variances & free covariances) 
-
-```{r}
-plotMixtures(m4_output$c3_lpa_m4.out,
-  ci = 0.95, bw = FALSE) 
-
-```
-
-*Figure.* Here we see an ordered solution with variation in item means across each of the four items within-class as well as between-class differences across the 3 classes. 
-
-________________________________________________________________________
 
 # References
 

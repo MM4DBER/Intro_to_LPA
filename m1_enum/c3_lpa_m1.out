@@ -1,6 +1,6 @@
 Mplus VERSION 8.6 (Mac)
 MUTHEN & MUTHEN
-10/24/2023   2:42 PM
+01/30/2024   9:48 AM
 
 INPUT INSTRUCTIONS
 
@@ -21,13 +21,13 @@ INPUT INSTRUCTIONS
       processors = 10;
   MODEL:
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-       !!!      Syntax replicates default Mplus specification (when C=4)     !!!
+       !!!          Syntax replicates default Mplus specification            !!!
        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
        %c#1%
-       [mth_scor-bio_scor];     !!! means are are freely estimated
-       mth_scor-bio_scor(1-4);  !!! variances are fixed to equality
-                                !!! covariances are fixed to zero (default)
+       [mth_scor-bio_scor];     !!! means are are freely estimated  (default)
+       mth_scor-bio_scor(1-4);  !!! variances are fixed to equality (default)
+                                !!! covariances are fixed to zero   (default)
    %c#2%
    [mth_scor-bio_scor];
    mth_scor-bio_scor(1-4);
@@ -37,6 +37,14 @@ INPUT INSTRUCTIONS
    mth_scor-bio_scor(1-4);
 
   ! %c#4%
+  ! [mth_scor-bio_scor];
+  ! mth_scor-bio_scor(1-4);
+
+  ! %c#5%
+  ! [mth_scor-bio_scor];
+  ! mth_scor-bio_scor(1-4);
+
+  ! %c#6%
   ! [mth_scor-bio_scor];
   ! mth_scor-bio_scor(1-4);
   OUTPUT:
@@ -579,9 +587,9 @@ The following plots are available:
   Estimated means and observed individual values
   Estimated overall and class-specific distributions
 
-     Beginning Time:  14:42:10
-        Ending Time:  14:42:16
-       Elapsed Time:  00:00:06
+     Beginning Time:  09:48:35
+        Ending Time:  09:48:42
+       Elapsed Time:  00:00:07
 
 
 

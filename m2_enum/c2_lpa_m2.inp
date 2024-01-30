@@ -29,6 +29,15 @@ MODEL:
 ! %c#4%
 ! [mth_scor-bio_scor];
 ! mth_scor-bio_scor;
+
+! %c#5%
+! [mth_scor-bio_scor];
+! mth_scor-bio_scor;
+
+! %c#6%
+! [mth_scor-bio_scor];
+! mth_scor-bio_scor;
+
 OUTPUT:
 sampstat residual tech11 tech14;
 PLOT:

@@ -15,13 +15,13 @@ estimator = mlr;
     processors = 10;
 MODEL:
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     !!!      Syntax replicates default Mplus specification (when C=4)     !!!
+     !!!          Syntax replicates default Mplus specification            !!!
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     
      %c#1%
-     [mth_scor-bio_scor];     !!! means are are freely estimated
-     mth_scor-bio_scor(1-4);  !!! variances are fixed to equality
-                              !!! covariances are fixed to zero (default)
+     [mth_scor-bio_scor];     !!! means are are freely estimated  (default)
+     mth_scor-bio_scor(1-4);  !!! variances are fixed to equality (default)
+                              !!! covariances are fixed to zero   (default)
  %c#2%
  [mth_scor-bio_scor];
  mth_scor-bio_scor(1-4);
@@ -33,6 +33,14 @@ MODEL:
  %c#4%
  [mth_scor-bio_scor];
  mth_scor-bio_scor(1-4);
+
+! %c#5%
+! [mth_scor-bio_scor];
+! mth_scor-bio_scor(1-4);
+
+! %c#6%
+! [mth_scor-bio_scor];
+! mth_scor-bio_scor(1-4);
 OUTPUT:
 sampstat residual tech11 tech14;
 PLOT:

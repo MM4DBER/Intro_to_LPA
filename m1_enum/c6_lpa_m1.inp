@@ -1,5 +1,5 @@
 TITLE:
-M1: Class2 
+M1: Class6 
 DATA:
 FILE = "/Users/agarber/github/Intro_to_LPA/m1_enum/c_lpa_m1.dat";
  
@@ -7,7 +7,7 @@ VARIABLE:
 NAMES = rural gender fathed mothed mth_scor sci_scor phy_scor bio_scor; 
  MISSING=.;
  usevar = mth_scor-bio_scor;
-classes = c(2); 
+classes = c(6); 
 ANALYSIS:
 estimator = mlr; 
     type = mixture;
@@ -26,21 +26,21 @@ MODEL:
  [mth_scor-bio_scor];
  mth_scor-bio_scor(1-4);
      
-! %c#3%
-! [mth_scor-bio_scor];
-! mth_scor-bio_scor(1-4);
+ %c#3%
+ [mth_scor-bio_scor];
+ mth_scor-bio_scor(1-4);
      
-! %c#4%
-! [mth_scor-bio_scor];
-! mth_scor-bio_scor(1-4);
+ %c#4%
+ [mth_scor-bio_scor];
+ mth_scor-bio_scor(1-4);
 
-! %c#5%
-! [mth_scor-bio_scor];
-! mth_scor-bio_scor(1-4);
+ %c#5%
+ [mth_scor-bio_scor];
+ mth_scor-bio_scor(1-4);
 
-! %c#6%
-! [mth_scor-bio_scor];
-! mth_scor-bio_scor(1-4);
+ %c#6%
+ [mth_scor-bio_scor];
+ mth_scor-bio_scor(1-4);
 OUTPUT:
 sampstat residual tech11 tech14;
 PLOT:

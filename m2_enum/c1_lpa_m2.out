@@ -1,6 +1,6 @@
 Mplus VERSION 8.6 (Mac)
 MUTHEN & MUTHEN
-10/24/2023   2:43 PM
+01/30/2024   9:56 AM
 
 INPUT INSTRUCTIONS
 
@@ -35,6 +35,15 @@ INPUT INSTRUCTIONS
   ! %c#4%
   ! [mth_scor-bio_scor];
   ! mth_scor-bio_scor;
+
+  ! %c#5%
+  ! [mth_scor-bio_scor];
+  ! mth_scor-bio_scor;
+
+  ! %c#6%
+  ! [mth_scor-bio_scor];
+  ! mth_scor-bio_scor;
+
   OUTPUT:
   sampstat residual tech11 tech14;
   PLOT:
@@ -407,9 +416,9 @@ The following plots are available:
   Estimated means and observed individual values
   Estimated overall and class-specific distributions
 
-     Beginning Time:  14:43:22
-        Ending Time:  14:43:23
-       Elapsed Time:  00:00:01
+     Beginning Time:  09:56:59
+        Ending Time:  09:57:01
+       Elapsed Time:  00:00:02
 
 
 
