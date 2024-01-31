@@ -621,7 +621,7 @@ gt(m4_enum)
 
 ________________________________________________________________________
 
-## Produce final table of model fit incuding `all models` 
+## Final table of model fit (`all models`) 
 
 ```{r, eval=TRUE}
 
@@ -731,15 +731,15 @@ tab_style(style = list(cell_text(weight = "bold")),
 
 **Interpreting results:** 
 
-For **model-1** the information criteria fit indices (BIC, aBIC, CAIC, AWE) show incremental decreases in the statistic value as class number increases with the minimum value for each IC index at the 6-class model (note; 1-6 class models enumerated). The model comparison tests (BLRT, VLMR, BF, cmPk) show mixed results: The VLMR endorses the 4-class solution while the BLRT, BF, and cmPk are inconclusive. Note, that with the exception of the VLMR the remaining summary statistics are inconclusive at picking a class solution among the 6 models enumerated with this variance/covariance specification. This is because it is not clear from this table whether a model with a greater number of classes would fit better than the set of solutions shown. This pattern of incremental drop in fit values is not uncommon in LPA analyses and in this context substantive factors such as the discrimination of the class patterns should also be considered. However, when looking across variance-covariance models this set of solutions has significantly higher values across all information criteria indicating that the alternative variance/covariance models have better fit to the data (e.g., `model-2`,..., `model-4`). 
+For **model-1** the information criteria fit indices (BIC, aBIC, CAIC, AWE) show incremental decreases in the statistic value as class number increases with the minimum value for each IC index at the 6-class model (note; 1-6 class models enumerated). The model comparison tests (BLRT, VLMR, BF, cmPk) show mixed results: The VLMR endorses the 4-class solution while the BLRT, BF, and cmPk are inconclusive. Note, that with the exception of the VLMR the remaining summary statistics are inconclusive at picking a class solution among the 6 models enumerated for this model variance/covariance specification. This is because it is not clear from this table whether a model with a greater number of classes would fit better than the set of solutions shown. This pattern of incremental drop in fit values is not uncommon in LPA analyses and in this context substantive factors such as the discrimination of the class patterns should also be considered. However, when looking across variance-covariance models this set of solutions has significantly higher values across all information criteria indicating that the other variance/covariance models have better fit to the data (e.g., `model-2`,..., `model-4`). 
 
-**Model-2** Shows a similar pattern to model-1 with 7 of the 8 fit summary statistics endorsing the 6-class solution. The exception being the VLMR which endorses the 4-class solution. To demonstrate the specification difference between models 1 and 2, namely the freeing of the variance parameters across class, these solutions have been plotted side-by-side (see figure below).
+**Model-2** shows a similar pattern to model-1 with 7 of the 8 fit summary statistics endorsing the 6-class solution. The exception being the VLMR which endorses the 4-class solution. To demonstrate the specification difference between models 1 and 2, namely the freeing of the variance parameters across class, these solutions have been plotted side-by-side (see plot below).
 
-**Model-3** shows mixed endorsement across the fit indices. The 3-class solution is endorsed by the BIC and BF (bayes factor) and the 2-class solution is endorsed by the CAIC and AWE. Model 3a shows the most consistent agreement for the 4-class solution (BIC, aBIC, CAIC, BF). However, the AWE and VLMR indicate the 2-class solution. Looking across the variance/covariance specification models this set of models shows a singficant improvement in model fit relative to model-1 & model-2. 
+**Model-3** shows mixed endorsement across the fit indices. The 3-class solution is endorsed by the BIC and BF and the 2-class solution is endorsed by the CAIC and AWE. Model 3a shows the most consistent agreement for the 4-class solution (BIC, aBIC, CAIC, BF). However, the AWE and VLMR indicate the 2-class solution. Looking across the variance/covariance specification models this set of models shows a significant improvement in model fit relative to model-1 & model-2. 
 
-**Model-3a** shows mixed support for the 2-class and 4-class solutions across the summary statistics. The 4-class solution is endorsed by the BIC, aBIC, CAIC, and BF. In contrast, the 2-class solution is endorsed by the AWE and VLMR. Models 3 and 3a overall have IC values that are very close in magnitude showing no clear support for one over the other. 
+**Model-3a** shows mixed support for the 2-class and 4-class solutions across the summary statistics. The 4-class solution is endorsed by the BIC, aBIC, CAIC, and BF. In contrast, the 2-class solution is endorsed by the AWE and VLMR. Models 3 and 3a overall have IC values that are very close in magnitude showing no clear support between the two models. 
 
-Finally, for **Model-4** the most consistent solution endorsed is the 3-class solution with five of the seven fit indices in agreement (BIC, CAIC, VLMR, BF, cmPK). For this model, the CAIC is contra-indicative and endorses the 3-class solution. Overall, this model has the lowest values across the information criteria so based on these statistics it has better fit based on this set of statistics. However, it is important to note that other substantive factors and considerations of parsimony should be considered in choosing the final model. 
+Finally, for **Model-4** the most consistent solution endorsed is the 3-class solution with five of the seven fit indices in agreement (BIC, CAIC, VLMR, BF, cmPK). For model-4, the CAIC is contra-indicative and endorses the 3-class solution. Overall, model-4 has the lowest relative values across the information criteria so based on these statistics it has better fit to the sample data. However, it is important to note that substantive factors and parsimony should be considered in choosing the final model. 
 
 ________________________________________________________________________
 
@@ -755,8 +755,10 @@ a <- plotMixtures(m1_output$c6_lpa_m1.out,
 b <- plotMixtures(m2_output$c6_lpa_m2.out,
   ci = 0.95, bw = FALSE) 
 
-a + labs(title = "Variances fixed to equality") +
-b + labs(title = "Variances freely estimated")
+a + labs(title = "Model-1: Variances fixed to equality") +
+    theme(plot.title = element_text(size = 12)) +
+b + labs(title = "Model-2: Variances freely estimated") +
+    theme(plot.title = element_text(size = 12))
 ```
 
 *Figure.* Here we see an ordered solution for model-1 and model-2. 
@@ -768,8 +770,8 @@ ________________________________________________________________________
 ## Plot conditional means & variances: `Model-4, C=3` (free variances & free covariances) 
 
 ```{r}
-plotMixtures(m4_output$c3_lpa_m4.out,
-  ci = 0.95, bw = FALSE) 
+plotMixtures(m4_output$c3_lpa_m4.out, ci = 0.95, bw = FALSE) + 
+  labs(title = "Model-4: Free variances & covariances")
 
 ```
 
