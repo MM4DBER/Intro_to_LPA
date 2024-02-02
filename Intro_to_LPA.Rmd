@@ -81,7 +81,7 @@ knitr::include_graphics(here("figures", "var_covar_matrix.png"))
 
 ________________________________________________________________________
 
-**Terminology for specifying variance-covariance:**
+**Terminology for specifying variance-covariance matrix:**
 
 - `Equal variances`: Variances are fixed to equality across class. (i.e., variances are constrained to be equal for each class)
 - `Free variances`: Variances parameters are freely estimated across class (i.e., variances vary by class)
@@ -127,7 +127,7 @@ ________________________________________________________________________
 
 ## `model 1`: Equal variances (fixed) & covariances fixed to zero
 
-In **model-1** the item variances are fixed to equality across latent classes (4 item variances per-class) and covariance parameters are fixed to zero (not estimated). In the applied example, each of the 4 items has a  unique variance estimated but the variances are held to equality across each of the latent classes in the example (`4*1= 4 variance parameters`). Relating this to the variance-covariance matrix this model is also named the, **class-invariant, diagonal model**. This is the default model in Mplus because it is a relatively parsimonious model. 
+In **model-1** the item variances are fixed to equality across latent classes (4 item variances per-class) and covariance parameters are fixed to zero (not estimated). In the applied example, each of the 4 items has a  unique variance estimated but the variances are held to equality across each of the latent classes in the example (`4*1= 4 variance parameters`). Relating this to the variance-covariance matrix this model is also named the, **class-invariant, diagonal model**. This is the default model in Mplus. Because it is a relatively parsimonious model it provides a good entry point to begin an LPA analysis. 
 
 ```{r, echo=FALSE, eval=TRUE, out.width = "60%", out.height= "60%", fig.pos="h"}
 
@@ -230,7 +230,7 @@ ________________________________________________________________________
 In **model-2** the variances are freely estimated across latent classes (4 item variances per-class; `4*4=16 variance parameters`) and covariance parameters are fixed to zero. In regards to the variance-covariance matrix this model is also named the, **class-varying, diagonal model**. 
 
 ```{r, eval=FALSE}
-lpa_k14  <- lapply(1:6, function(k) { 
+lpa_m2  <- lapply(1:6, function(k) { 
   z2 <- if_else(k < 2 , '!' , '')
   z3 <- if_else(k < 3 , '!' , '')
   z4 <- if_else(k < 4 , '!' , '')
@@ -288,7 +288,7 @@ lpa_enum  <- mplusObject(
   usevariables = colnames(lsay_data),
   rdata = lsay_data)
 
-lpa_enum_fit <- mplusModeler(lpa_enum, 
+lpa_m2_fit <- mplusModeler(lpa_enum, 
     dataout=glue(here("m2_enum", "c_lpa_m2.dat")),
     modelout=glue(here("m2_enum", "c{k}_lpa_m2.inp")) ,
     check=TRUE, run = TRUE, hashfilename = FALSE)
@@ -318,7 +318,7 @@ ________________________________________________________________________
 In **model-3** the variances are fixed to equality across latent classes and covariance parameters are freely estimated. In relation to the variance-covariance matrix this model is also named the, **class-invariant, non-diagonal model**. In the example below a total of `4` variance parameters and `24` covariance parameters are estimated (i.e., `6 covariances per-class`). Note that although this example demonstrates a model with all covariances estimated, any number of the covariance (or variance) parameters can be either fixed or freely estimated. For example, 2 item covariances may have substantive meaning while no theoretical precedent exists for estimating the remaining 4 pairwise item covariances. 
 
 ```{r, eval=FALSE}
-lpa_k14  <- lapply(1:4, function(k) { 
+lpa_m3  <- lapply(1:4, function(k) { 
   z2 <- if_else(k < 2 , '!' , '')
   z3 <- if_else(k < 3 , '!' , '')
   z4 <- if_else(k < 4 , '!' , '')
@@ -388,7 +388,7 @@ lpa_enum  <- mplusObject(
   usevariables = colnames(lsay_data),
   rdata = lsay_data)
 
-lpa_enum_fit <- mplusModeler(lpa_enum, 
+lpa_m3_fit <- mplusModeler(lpa_enum, 
     dataout=glue(here("m3_enum", "c_lpa_m3.dat")),
     modelout=glue(here("m3_enum", "c{k}_lpa_m3.inp")) ,
     check=TRUE, run = TRUE, hashfilename = FALSE)
@@ -418,7 +418,7 @@ ________________________________________________________________________
 In **model-3a** the variances are fixed to equality across latent classes and covariance parameters are fixed to equality across the 4 latent classes. In-other-words, this model estimates 4 item variances & 6 item covariances. Each unique item has a separate variance estimated and each pairwise covariance has a separate covariance estimated but all the variance-covariance parameters are held to equality across class. 
 
 ```{r, eval=FALSE}
-lpa_k14  <- lapply(1:4, function(k) { 
+lpa_m3a  <- lapply(1:4, function(k) { 
   z2 <- if_else(k < 2 , '!' , '')
   z3 <- if_else(k < 3 , '!' , '')
   z4 <- if_else(k < 4 , '!' , '')
@@ -488,7 +488,7 @@ lpa_enum  <- mplusObject(
   usevariables = colnames(lsay_data),
   rdata = lsay_data)
 
-lpa_enum_fit <- mplusModeler(lpa_enum, 
+lpa_m3a_fit <- mplusModeler(lpa_enum, 
     dataout=glue(here("m3a_enum", "c_lpa_m3a.dat")),
     modelout=glue(here("m3a_enum", "c{k}_lpa_m3a.inp")) ,
     check=TRUE, run = TRUE, hashfilename = FALSE)
@@ -525,7 +525,7 @@ knitr::include_graphics(here("figures", "lpa_m4.png"))
 *Figure*. Picture adapted from Masyn (2013) 
 
 ```{r, eval=FALSE}
-lpa_k14  <- lapply(1:4, function(k) { 
+lpa_m4  <- lapply(1:4, function(k) { 
   z2 <- if_else(k < 2 , '!' , '')
   z3 <- if_else(k < 3 , '!' , '')
   z4 <- if_else(k < 4 , '!' , '')
@@ -595,7 +595,7 @@ lpa_enum  <- mplusObject(
   usevariables = colnames(lsay_data),
   rdata = lsay_data)
 
-lpa_enum_fit <- mplusModeler(lpa_enum, 
+lpa_m4_fit <- mplusModeler(lpa_enum, 
     dataout=glue(here("m4_enum", "c_lpa_m4.dat")),
     modelout=glue(here("m4_enum", "c{k}_lpa_m4.inp")) ,
     check=TRUE, run = TRUE, hashfilename = FALSE)
@@ -731,15 +731,45 @@ tab_style(style = list(cell_text(weight = "bold")),
 
 **Interpreting results:** 
 
-For **model-1** the information criteria fit indices (BIC, aBIC, CAIC, AWE) show incremental decreases in the statistic value as class number increases with the minimum value for each IC index at the 6-class model (note; 1-6 class models enumerated). The model comparison tests (BLRT, VLMR, BF, cmPk) show mixed results: The VLMR endorses the 4-class solution while the BLRT, BF, and cmPk are inconclusive. Note, that with the exception of the VLMR the remaining summary statistics are inconclusive at picking a class solution among the 6 models enumerated for this model variance/covariance specification. This is because it is not clear from this table whether a model with a greater number of classes would fit better than the set of solutions shown. This pattern of incremental drop in fit values is not uncommon in LPA analyses and in this context substantive factors such as the discrimination of the class patterns should also be considered. However, when looking across variance-covariance models this set of solutions has significantly higher values across all information criteria indicating that the other variance/covariance models have better fit to the data (e.g., `model-2`,..., `model-4`). 
+For **model-1** the information criteria fit indices (BIC, aBIC, CAIC, AWE) show incremental decreases in the statistic value as class number increases with the minimum value for each IC index at the 6-class model (note; 1-6 class models enumerated). The model comparison tests (BLRT, VLMR, BF, cmPk) show mixed results: The VLMR endorses the 4-class solution while the BLRT, BF, and cmPk are inconclusive. Note, that with the exception of the VLMR the remaining summary statistics are inconclusive at picking a class solution among the 6 models enumerated for this model variance/covariance specification. This is because it is not clear from this table whether a model with a greater number of classes would fit better than the set of solutions shown. This pattern of incremental drop in fit values is not uncommon in LPA/LCA analyses and in this context substantive factors such as the discrimination of the class patterns should also be considered. One common method is to plot the IC values and look for “diminishing returns” in the ICs for each additional class (See figure;Nylund-Gibson & Choi, 2018). However, when looking across variance-covariance models this set of solutions has significantly higher values across all information criteria indicating that the other variance/covariance models have better fit to the data (e.g., `model-2`,..., `model-4`). 
 
-**Model-2** shows a similar pattern to model-1 with 7 of the 8 fit summary statistics endorsing the 6-class solution. The exception being the VLMR which endorses the 4-class solution. To demonstrate the specification difference between models 1 and 2, namely the freeing of the variance parameters across class, these solutions have been plotted side-by-side (see plot below).
+**Model-2** shows a similar pattern to model-1 with 7 of the 8 fit summary statistics endorsing the 6-class solution. The exception is the VLMR which endorses the 4-class solution. To demonstrate the specification difference between models 1 and 2, namely the freeing of the variance parameters across class, these solutions have been plotted side-by-side (see plot below).
 
 **Model-3** shows mixed endorsement across the fit indices. The 3-class solution is endorsed by the BIC and BF and the 2-class solution is endorsed by the CAIC and AWE. Model 3a shows the most consistent agreement for the 4-class solution (BIC, aBIC, CAIC, BF). However, the AWE and VLMR indicate the 2-class solution. Looking across the variance/covariance specification models this set of models shows a significant improvement in model fit relative to model-1 & model-2. 
 
 **Model-3a** shows mixed support for the 2-class and 4-class solutions across the summary statistics. The 4-class solution is endorsed by the BIC, aBIC, CAIC, and BF. In contrast, the 2-class solution is endorsed by the AWE and VLMR. Models 3 and 3a overall have IC values that are very close in magnitude showing no clear support between the two models. 
 
 Finally, for **Model-4** the most consistent solution endorsed is the 3-class solution with five of the seven fit indices in agreement (BIC, CAIC, VLMR, BF, cmPK). For model-4, the CAIC is contra-indicative and endorses the 3-class solution. Overall, model-4 has the lowest relative values across the information criteria so based on these statistics it has better fit to the sample data. However, it is important to note that substantive factors and parsimony should be considered in choosing the final model. 
+
+________________________________________________________________________
+
+**Plot information criteria:**
+
+```{r}
+allFit1 %>%
+  dplyr::select(1, 4:7) %>%
+  rowid_to_column() %>%
+  pivot_longer(`BIC`:`AWE`,
+               names_to = "Index",
+               values_to = "ic_value") %>% 
+  separate(Title, c('Model', 'Class'), sep = ": Class")  %>% 
+  mutate(Class = as.numeric(Class)) %>%
+  mutate(Index = factor(Index,
+                        levels = c ("AWE", "CAIC", "BIC", "aBIC"))) %>%
+  ggplot(aes(x = Class, y = ic_value,
+    color = Index, shape = Index, group = Index, lty = Index)) +
+  facet_wrap(~Model, scales="free") +
+  geom_point(size = 2.0) + geom_line(size = .8) +
+  scale_x_continuous(breaks = 1:nrow(allFit)) +
+  theme_minimal() +
+  labs(x = "Number of Classes", y = "Information Criteria Value",
+       title = "Information Criteria") +
+  theme(text = element_text(family = "serif", size = 12),
+    legend.text = element_text(family="serif", size=12),
+    legend.key.width = unit(3, "line"), legend.title = element_blank(),
+    legend.position = "top")
+```
+
 
 ________________________________________________________________________
 
